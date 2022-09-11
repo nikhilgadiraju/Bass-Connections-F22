@@ -11,21 +11,22 @@ import statistics
 import nibabel as nib
 
 # %% Defining file paths
-# MAIN file path; this is where this python script is found as well as the folders indicated in the below file paths
+# MAIN file paths; (fpath_main) this is where this python script is found as well as the folders indicated in the below file paths; (fpath_dat_main) This is where all input and output data is stored
 fpath_main = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22"
+fpath_dat_main = "/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections"
 
 # INPUT file paths
-fpath_dat = "/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/CVN_T1_Skullstripped_Labels"  # Location of all data (Volumes AND Labels)
+fpath_dat = fpath_dat_main + "/Data/CVN_T1_Skullstripped_Labels"  # Location of all data (Volumes AND Labels)
 fpath_norm_csv = fpath_main + "/Reference CSVs/normVals.csv"
 fpath_atlas_csv = fpath_main + "/Reference CSVs"
 
 # OUTPUT file paths
-fpath_norm = "/Users/nikhilgadiraju/Desktop/2021-2022/Extracurriculurs/Bass Connections/Manganese Image Processing/Water Tube-Normalized Brain Volumes"
-fpath_binmask = "/Users/nikhilgadiraju/Desktop/2021-2022/Extracurriculurs/Bass Connections/Manganese Image Processing/Masked Brain Volumes"
-fpath_bfc_img = "/Users/nikhilgadiraju/Desktop/2021-2022/Extracurriculurs/Bass Connections/Manganese Image Processing/Bias Field Corrected (BFC) Brain Volumes"
-fpath_bfield = "/Users/nikhilgadiraju/Desktop/2021-2022/Extracurriculurs/Bass Connections/Manganese Image Processing/BFC Bias Fields"
-fpath_reg_csv = "/Users/nikhilgadiraju/Desktop/2021-2022/Extracurriculurs/Bass Connections/Manganese Image Processing/Regional Data CSVs"
-fpath_meanint_voxvol_csv = "/Users/nikhilgadiraju/Desktop/2021-2022/Extracurriculurs/Bass Connections/Manganese Image Processing/Mean Intensity & Voxel Volumes"
+fpath_norm = fpath_dat_main + "/Processed Data/Water Tube-Normalized Brain Volumes"
+fpath_binmask = fpath_dat_main + "/Processed Data/Masked Brain Volumes"
+fpath_bfc_img = fpath_dat_main + "/Processed Data/Bias Field Corrected (BFC) Brain Volumes"
+fpath_bfield = fpath_dat_main + "/Processed Data/BFC Bias Fields"
+fpath_reg_csv = fpath_dat_main + "/Processed Data/Regional Data CSVs"
+fpath_meanint_voxvol_csv = fpath_dat_main + "/Processed Data/Mean Intensity & Voxel Volumes"
 
 # %% Read input files
 # Save all brain volume and their associated label files' names into a list
