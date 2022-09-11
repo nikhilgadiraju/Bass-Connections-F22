@@ -22,7 +22,7 @@ fpath_atlas_csv = fpath_main + "/Reference CSVs"
 
 # OUTPUT file paths
 fpath_norm = fpath_dat_main + "/Processed Data/Water Tube-Normalized Brain Volumes"
-fpath_binmask = fpath_dat_main + "/Processed Data/Masked Brain Volumes"
+# fpath_binmask = fpath_dat_main + "/Processed Data/Masked Brain Volumes"
 fpath_bfc_img = fpath_dat_main + "/Processed Data/Bias Field Corrected (BFC) Brain Volumes"
 fpath_bfield = fpath_dat_main + "/Processed Data/BFC Bias Fields"
 fpath_reg_csv = fpath_dat_main + "/Processed Data/Regional Data CSVs"
@@ -119,14 +119,14 @@ for x in data_lab_dict:
 
     brain_bin = np.multiply(lab_masked, data)
 
-    # Save masked noramlized brain volume to below folder
-    newname = x[0:-7] + '_mask' + '.nii.gz'
-    os.chdir(fpath_binmask)  # Location of masked normalized brain volumes
-    nib.save(nib.Nifti1Image(brain_bin, lab.affine), newname)
+    # Save masked normalized brain volume to below folder
+    # newname = x[0:-7] + '_mask' + '.nii.gz'
+    # os.chdir(fpath_binmask)  # Location of masked normalized brain volumes
+    # nib.save(nib.Nifti1Image(brain_bin, lab.affine), newname)
 
 # %% Bias field Correction
 # Run in local system
-os.chdir(fpath_main)
+os.chdir(fpath_main + "/Scripts")
 os.system('bash loopscript.sh')
 
 # %% Find Regional mean values
