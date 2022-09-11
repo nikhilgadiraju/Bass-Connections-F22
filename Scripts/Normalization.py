@@ -59,7 +59,7 @@ diff = []
 
 for k in data_lab_dict:
     for y in range(0, len(norm_filenames)):
-        if norm_filenames[y] == k:
+        if norm_filenames[y][0:12] == k[0:12]:
             data_lab_dict[k] = [data_lab_dict[k], mratio[y]]
             union.append(k)
 
