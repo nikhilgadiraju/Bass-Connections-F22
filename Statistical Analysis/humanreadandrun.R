@@ -7,6 +7,8 @@ data=data[  , -c(1,2,3)]
 dim(data)
 data=na.omit(data)
 
+data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]]/rowSums(data[,2:dim(data)[2]])
+
 #data=transpose(data, keep.names = "col")
 #traits=read.csv('AD_DECODEpower.csv')
 
@@ -80,27 +82,30 @@ len = dim(data)[2]
 for (i in 1:(len-1))  {
    
   tempname=rownames(pvalsresults)[i]
-  res.aov <- anova_test(get(tempname) ~ Treatment, data = data)
+  #class(data$A24a_L)
+  
+  res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data)
   a = get_anova_table(res.aov)
   p = a$p
   pvalsresults[i,1] <- p
   
 }
-pvalsresultsadjusted <- pvalsresults[pvalsresults[,1]<=0.05,]
+# pvalsresultsadjusted <- pvalsresults[pvalsresults[,1]<=0.05,]
 
 #Error in Anova.III.lm(mod, error, singular.ok = singular.ok, ...) : 
 #  there are aliased coefficients in the model
 #Note: model has aliased coefficients
 #sums of squares computed by model comparison
 ###### THis error is beacasue recval% and sex are present and teh residual are very close
-pvalsresults[pvalsresults[,2]<=0.05,]
+# pvalsresults[pvalsresults[,2]<=0.05,]
 
 pvalsresultsadjusted=pvalsresults
 
 ###adjust pvalues Benjamini & Hochberg
-for (j in 1:dim(pvalsresultsadjusted)[2]) {
+# for (j in 1:dim(pvalsresultsadjusted)[2]) {
+  j=1
   pvalsresultsadjusted[,j] = p.adjust(pvalsresultsadjusted[,j], "fdr") #Benjamini & Hochberg
-}
+# }
 
 #Error in p.adjust(pvalsresultscopy[, j], "BH", n = dim(data)[1]) : 
 #  n >= lp is not TRUE
@@ -109,13 +114,16 @@ sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,] #Adjusted P-values
 
 sig = sig[,1]
 posthoc=matrix(NA,length(sig),4)
+posthoc[,1]=sig
+
 for (i in 1:length(sig)) {
   tempname=names(sig)[i]
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
   tuk=tukey_hsd(res.aov)
-  posthoc[,1]=sig
-  posthoc[,2:4]=tuk$p.adj
+  posthoc[i,2:4]=tuk$p.adj
 }
 
 colnames(posthoc)=c("FDR","ST","SW","TW")
 rownames(posthoc)=names(sig)
+
+write.csv(posthoc, 'posthoc_standard.csv')
