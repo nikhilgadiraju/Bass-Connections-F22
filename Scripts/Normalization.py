@@ -136,9 +136,7 @@ for x in filenames:
         reg_iso = np.multiply(np.array(corrected_image), reg_mask)  # Isolated Region (image)
         mean_val = np.sum(reg_iso) / np.count_nonzero(reg_mask)  # Mean intensity value
 
-        # Convert voxel count into a fraction of total brain voxel count (normalize to entire brain size)
-        # 'np.count_nonzero(reg_mask)' vs 'np.count_nonzero(reg_mask) / np.count_nonzero(corrected_image)' - Voxel Count vs Fraction of total brain volume
-        val_arr = [abb_updated[k], atlas.get(abb_updated[k]), np.count_nonzero(reg_mask)/np.count_nonzero(corrected_image), mean_val]
+        val_arr = [abb_updated[k], atlas.get(abb_updated[k]), np.count_nonzero(reg_mask), mean_val]
         datf.append(val_arr)
 
     reg_df = pd.DataFrame(datf, columns=['Structure Abbreviation', 'Index', 'Voxel Number', 'Mean intensity'])
