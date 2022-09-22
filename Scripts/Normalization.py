@@ -294,6 +294,7 @@ def treatment_match(input_id):
 treatment_map = list(map(lambda x: treatment_match(x), id_vv))
 treatment_align_df = pd.DataFrame({'ID': id_vv, 'Treatment': treatment_map})
 out_df_vv.insert(2, 'Treatment', list(treatment_align_df.iloc[:,1]))
+out_df_vv = out_df_vv.sort_values(by=['Treatment'], ascending=False)
 
 os.chdir(fpath_meanint_voxvol_csv)
 out_df_mi = pd.DataFrame(output_mi, columns=columnsarr)
