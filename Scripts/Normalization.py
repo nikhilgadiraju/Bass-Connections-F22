@@ -17,8 +17,9 @@ fpath_dat_main = "/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass C
 
 # INPUT file paths
 fpath_dat = fpath_dat_main + "/Data/CVN_T1_Skullstripped_Labels"  # Location of all data (Volumes AND Labels)
-fpath_norm_csv = fpath_main + "/Reference CSVs/normVals.csv"
-fpath_atlas_csv = fpath_main + "/Reference CSVs"
+fpath_norm_csv = fpath_main + "/Reference Files/User-generated Files/normVals.csv"
+fpath_atlas_csv = fpath_main + "/Reference Files/Absolute Files"
+fpath_id_treatment_csv = fpath_main + "/Reference Files/User-generated Files"
 
 # OUTPUT file paths
 fpath_norm = fpath_dat_main + "/Processed Data/Water Tube-Normalized Brain Volumes"
@@ -275,6 +276,25 @@ for x in data_lab_dict:
 
 cols = product(regs_abbrev, ['Mean_int', 'Z-score'])
 columnsarr = pd.MultiIndex.from_tuples([('Filename', ''), ('ID', '')] + list(cols))
+
+# Adding treatment column
+os.chdir(fpath_id_treatment_csv)
+id_treatment = pd.read_csv("ID_Treatment.csv")
+treatment_dict = id_treatment.set_index('ID')["Treatment"].to_dict()
+id_vv = pd.Series(out_df_vv.loc[:,"ID"])
+
+def treatment_match(input_id):
+    if str(input_id) in list(treatment_dict.keys()):
+        for id, treatment in treatment_dict.items():
+            if str(input_id) == str(id):
+                return treatment
+    else:
+        return None
+
+treatment_map = list(map(lambda x: treatment_match(x), id_vv))
+treatment_align_df = pd.DataFrame({'ID': id_vv, 'Treatment': treatment_map})
+out_df_vv.insert(2, 'Treatment', list(treatment_align_df.iloc[:,1]))
+out_df_vv = out_df_vv.sort_values(by=['Treatment'], ascending=False)
 
 os.chdir(fpath_meanint_voxvol_csv)
 out_df_mi = pd.DataFrame(output_mi, columns=columnsarr)
