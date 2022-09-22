@@ -19,6 +19,7 @@ fpath_dat_main = "/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass C
 fpath_dat = fpath_dat_main + "/Data/CVN_T1_Skullstripped_Labels"  # Location of all data (Volumes AND Labels)
 fpath_norm_csv = fpath_main + "/Reference CSVs/normVals.csv"
 fpath_atlas_csv = fpath_main + "/Reference CSVs"
+fpath_id_treatment_csv = fpath_main + "/Reference Files/User-generated Files"
 
 # OUTPUT file paths
 fpath_norm = fpath_dat_main + "/Processed Data/Water Tube-Normalized Brain Volumes"
@@ -275,6 +276,12 @@ for x in data_lab_dict:
 
 cols = product(regs_abbrev, ['Mean_int', 'Z-score'])
 columnsarr = pd.MultiIndex.from_tuples([('Filename', ''), ('ID', '')] + list(cols))
+
+# Adding treatment column
+os.chdir(fpath_id_treatment_csv)
+id_treatment = pd.read_csv("ID_Treatment.csv")
+treatment_dict = id_treatment.set_index('ID')["Treatment"].to_dict()
+id_vv = out_df_vv.loc[:,"ID"]
 
 os.chdir(fpath_meanint_voxvol_csv)
 out_df_mi = pd.DataFrame(output_mi, columns=columnsarr)
