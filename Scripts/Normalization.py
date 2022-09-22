@@ -17,8 +17,8 @@ fpath_dat_main = "/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass C
 
 # INPUT file paths
 fpath_dat = fpath_dat_main + "/Data/CVN_T1_Skullstripped_Labels"  # Location of all data (Volumes AND Labels)
-fpath_norm_csv = fpath_main + "/Reference CSVs/normVals.csv"
-fpath_atlas_csv = fpath_main + "/Reference CSVs"
+fpath_norm_csv = fpath_main + "/Reference Files/User-generated Files/normVals.csv"
+fpath_atlas_csv = fpath_main + "/Reference Files/Absolute Files"
 fpath_id_treatment_csv = fpath_main + "/Reference Files/User-generated Files"
 
 # OUTPUT file paths
