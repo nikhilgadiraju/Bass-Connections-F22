@@ -56,10 +56,13 @@ sns.set(font_scale = 1.2)
 title_groups = ['Sedentary vs. Voluntary + Enforced Exercise','Sedentary vs. Voluntary Exercise','Voluntary vs. Voluntary + Forced Exercise']
 title_dict = {comp_groups[i]: title_groups[i] for i in range(len(comp_groups))}
 
+# TODO: Update voxvol CSV so that reported figures have a Y-axis of proportinoal brain volumes rather than voxel count
+# TODO: Consider how to repress matplotlib deprecation errors
 for listframe in range(len(top_regs)):
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
     fig.suptitle('Most Significant Regions via Post-Hoc Analysis\n({})'.format(title_dict[comp_groups[listframe]]),
                  y=1.15, fontsize=16)
+    fig.text(0.04, 0.5, 'Voxel Count', va='center', rotation='vertical')
     for val in range(top_regs_num):
         name = top_regs[listframe].iloc[val,0]
         reg = name_dict[name]
