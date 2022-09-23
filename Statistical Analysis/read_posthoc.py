@@ -24,6 +24,7 @@ def abbreviation_update(abbrev, hemisphere):
         new_abbrev = abbrev
     return new_abbrev
 
+
 # %% DATA IMPORTS
 df = pd.read_csv("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/posthoc_standard.csv")
 index = pd.read_csv("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/Absolute Files/index.csv")
@@ -35,5 +36,9 @@ abbreviation_updated = list(map(lambda x,y: abbreviation_update(x,y), index_df["
 struc_abbrev = pd.DataFrame({'Abbreviation': abbreviation_updated, 'Structure': structure_updated})
 namedict = struc_abbrev.to_dict()
 
-df_FDR = df.sort_values(by=['ST'], ascending=True)
-print(df_FDR)
+top_regs = []
+top_regs_num = 3
+for comparison in ['ST','SW','TW']:
+    df_comp = df.sort_values(by=[comparison], ascending=True)
+    top = pd.DataFrame({'Abbreviation': df_comp.iloc[:,0], '{} p-value'.format(comparison): df_comp.loc[:,comparison]}).head(top_regs_num)
+    top_regs.append(top)
