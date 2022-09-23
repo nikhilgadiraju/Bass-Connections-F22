@@ -39,7 +39,7 @@ abbreviation_updated = list(map(lambda x,y: abbreviation_update(x,y), index_df["
 name_dict = {abbreviation_updated[i]: structure_updated[i] for i in range(len(abbreviation_updated))}
 
 top_regs = []
-top_regs_num = 3
+top_regs_num = 5
 comp_groups = ['ST','SW','TW']
 for comparison in comp_groups:
     df_comp = df.sort_values(by=[comparison], ascending=True)
@@ -56,11 +56,12 @@ sns.set(font_scale = 1.2)
 title_groups = ['Sedentary vs. Voluntary + Enforced Exercise','Sedentary vs. Voluntary Exercise','Voluntary vs. Voluntary + Forced Exercise']
 title_dict = {comp_groups[i]: title_groups[i] for i in range(len(comp_groups))}
 
-for listframe in range(len(top_regs)):
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+plot_num = 3
+for listframe in range(len(comp_groups)):
+    fig, axes = plt.subplots(1, plot_num, figsize=(15, 5))
     fig.suptitle('Most Significant Regions via Post-Hoc Analysis\n({})'.format(title_dict[comp_groups[listframe]]),
                  y=1.15, fontsize=16)
-    for val in range(top_regs_num):
+    for val in range(plot_num):
         name = top_regs[listframe].iloc[val,0]
         reg = name_dict[name]
         sns.violinplot(ax = axes[val], x = "Treatment", y = name, data = df_vol.filter(['Treatment', name], axis=1)).set_ylabel("")
