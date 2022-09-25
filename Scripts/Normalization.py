@@ -1,6 +1,12 @@
+# Bass Connections Fall 2022
+# Author: Nikhil Gadiraju
+
+# %% NOTES
+# The purpose of this file is to process the raw collected mice data and output CSV's of the mean intensity values and voxel counts for each brain region within a number of brain datasets
+
+# %% NOTES
 # ** The only variables that the user should have to change is the file paths found in the below section (below imports) as well as those in the 'loopscript.sh' shell script
 
-# pck edit this file
 # %% Imports
 from __future__ import print_function
 import os
