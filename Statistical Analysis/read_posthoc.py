@@ -61,6 +61,7 @@ for listframe in range(len(comp_groups)):
     fig, axes = plt.subplots(1, plot_num, figsize=(15, 5))
     fig.suptitle('Most Significant Regions via Post-Hoc Analysis\n({})'.format(title_dict[comp_groups[listframe]]),
                  y=1.15, fontsize=16)
+    fig.text(0.04, 0.5, 'Voxel Count', va='center', rotation='vertical')
     for val in range(plot_num):
         name = top_regs[listframe].iloc[val,0]
         reg = name_dict[name]

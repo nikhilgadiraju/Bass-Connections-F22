@@ -136,6 +136,7 @@ for x in filenames:
         reg_iso = np.multiply(np.array(corrected_image), reg_mask)  # Isolated Region (image)
         mean_val = np.sum(reg_iso) / np.count_nonzero(reg_mask)  # Mean intensity value
 
+        # For whole-brain proportions, change 'np.count_nonzero(reg_mask)' to 'np.count_nonzero(reg_mask)/np.count_nonzero(corrected_image)' and re-run code
         val_arr = [abb_updated[k], atlas.get(abb_updated[k]), np.count_nonzero(reg_mask), mean_val]
         datf.append(val_arr)
 
