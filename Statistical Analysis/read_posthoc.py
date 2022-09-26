@@ -73,7 +73,7 @@ for listframe in range(len(comp_groups)): # This loop iterates through each comp
     fig, axes = plt.subplots(1, plot_num, figsize=(15, 5))
     fig.suptitle('Most Significant Regions via Post-Hoc Analysis\n({})'.format(title_dict[comp_groups[listframe]]),
                  y=1.15, fontsize=16)
-    fig.text(0.04, 0.5, 'Voxel Count', va='center', rotation='vertical')
+    fig.text(0.04, 0.5, 'Regional Proportion', va='center', rotation='vertical')
     for val in range(plot_num): # This list iterates through each plot within a given figure (for the top significant regions as specified by plot_num)
         name = top_regs[listframe].iloc[val,0]
         reg = name_dict[name]
@@ -81,8 +81,9 @@ for listframe in range(len(comp_groups)): # This loop iterates through each comp
         axes[val].set_title(reg, fontsize = 14)
         axes[val].set_xlabel("")
     # Save figures in specified folder
-    plt.savefig('{}/{}.png'.format('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures',
-                                   comp_groups[listframe]))
+    plt.show()
+    #plt.savefig('{}/{}.png'.format('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures',
+                                   #comp_groups[listframe]))
 
 
 
