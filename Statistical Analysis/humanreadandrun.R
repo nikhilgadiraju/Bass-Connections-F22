@@ -11,7 +11,7 @@ dim(data)
 data=na.omit(data) 
 
 # Convert voxel counts to proportions of total brain volume
-data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]]/rowSums(data[,2:dim(data)[2]]) 
+data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]] 
 
 # Create blank matrix to represent p values (column) for each brain regions (rows)
 pvalsresults=matrix(NA,(dim(data)[2]-1)  , 3 )
