@@ -59,30 +59,35 @@ rownames(posthoc)=names(sig)
 write.csv(posthoc, 'posthoc_standard.csv')
 
 # Read top regions CSVs
-top_st=read.csv('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/top_regions_st.csv')
+comparison = 'tw'
+print(comparison)
+top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/top_regions_',comparison,'.csv',sep=""))
 
 # Basic Violin Plots
-sig_reg = top_st$Abbreviation
-reg_struc = top_st$Structure
+sig_reg = top_comp$Abbreviation
+reg_struc = top_comp$Structure
 
 p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + 
   geom_violin() + geom_boxplot(width=0.1) +
-  labs(title=reg_struc[1], subtitle=paste("p-value of ",toString(top_st$p.values..ST.[1])), y="Normalized Regional Proportion", x="") +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  labs(title=reg_struc[1], subtitle=paste("p-value of ",toString(top_comp$p.values..ST.[1])), y="Normalized Regional Proportion", x="") +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.y = element_text(margin = margin(r = 10)))
 
 p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
   geom_violin() + geom_boxplot(width=0.1) + 
-  labs(title=reg_struc[2], subtitle=paste("p-value of ",toString(top_st$p.values..ST.[2])), y="", x="Treatment") +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  labs(title=reg_struc[2], subtitle=paste("p-value of ",toString(top_comp$p.values..ST.[2])), y="", x="Treatment Conditions") +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.x = element_text(margin = margin(t = 10)))
 
 p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
   geom_violin() + geom_boxplot(width=0.1) + 
-  labs(title=reg_struc[3], subtitle=paste("p-value of ",toString(top_st$p.values..ST.[3])), y="", x="") +
+  labs(title=reg_struc[3], subtitle=paste("p-value of ",toString(top_comp$p.values..ST.[3])), y="", x="") +
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
 
+File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",comparison,'.png',sep="")
+ggsave(File, width=1213, height=379, dpi=150, units='px')
+
+'''
+png(File, width=1213, height=379)
 p1 + p2 + p3
-
-
-
-
+dev.off()
+'''
 
