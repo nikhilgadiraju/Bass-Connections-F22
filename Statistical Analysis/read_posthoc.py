@@ -53,7 +53,7 @@ top_regs_num = 5
 comp_groups = ['ST','SW','TW']
 for comparison in comp_groups:
     df_comp = df.sort_values(by=[comparison], ascending=True)
-    top = pd.DataFrame({'Abbreviation': df_comp.iloc[:,0], 'Structure': [name_dict[key] for key in df_comp.iloc[:,0]], 'p-values ({})'.format(comparison): df_comp.loc[:,comparison]}).head(top_regs_num)
+    top = pd.DataFrame({'Abbreviation': df_comp.iloc[:,0], 'Structure': [name_dict[key] for key in df_comp.iloc[:,0]], 'p-values': df_comp.loc[:,comparison]}).head(top_regs_num)
     top_regs.append(top) # Append relevant regions based on comparison group to empty top_regs list
 
 # Replace naming convention for different treatment groups to more accurately describe exercise conditions
