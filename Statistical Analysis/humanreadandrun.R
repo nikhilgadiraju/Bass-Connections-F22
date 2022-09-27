@@ -4,6 +4,8 @@ library(readxl)
 library(rstatix)
 library(jmv)
 library(ggplot2)
+library(patchwork)
+library(ggeasy)
 
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
@@ -61,12 +63,26 @@ top_st=read.csv('/Volumes/GoogleDrive/My Drive/Education School/Duke University/
 
 # Basic Violin Plots
 sig_reg = top_st$Abbreviation
+reg_struc = top_st$Structure
+
 p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + 
-  geom_violin() + geom_boxplot(width=0.1)
+  geom_violin() + geom_boxplot(width=0.1) +
+  labs(title=reg_struc[1], subtitle=paste("p-value of ",toString(top_st$p.values..ST.[1])), y="Normalized Regional Proportion", x="") +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+
 p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
-  geom_violin() + geom_boxplot(width=0.1)
+  geom_violin() + geom_boxplot(width=0.1) + 
+  labs(title=reg_struc[2], subtitle=paste("p-value of ",toString(top_st$p.values..ST.[2])), y="", x="Treatment") +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+
 p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
-  geom_violin() + geom_boxplot(width=0.1)
-ggplot.multiplot(p1, p2, p3, cols=3)
+  geom_violin() + geom_boxplot(width=0.1) + 
+  labs(title=reg_struc[3], subtitle=paste("p-value of ",toString(top_st$p.values..ST.[3])), y="", x="") +
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+
+p1 + p2 + p3
+
+
+
 
 
