@@ -60,8 +60,13 @@ write.csv(posthoc, 'posthoc_standard.csv')
 top_st=read.csv('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/top_regions_st.csv')
 
 # Basic Violin Plots
-sig_reg = top_st$Abbreviation[1]
-p <- ggplot(data, aes_string(x="Treatment", y=sig_reg)) + 
-  geom_violin()
-p
+sig_reg = top_st$Abbreviation
+p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + 
+  geom_violin() + geom_boxplot(width=0.1)
+p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
+  geom_violin() + geom_boxplot(width=0.1)
+p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
+  geom_violin() + geom_boxplot(width=0.1)
+ggplot.multiplot(p1, p2, p3, cols=3)
+
 
