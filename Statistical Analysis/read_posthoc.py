@@ -7,8 +7,7 @@
 
 # %% PACKAGE/MODULE IMPORTS
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import os
 
 # %% FUNCTION DEFINITIONS
 # Define function to rename brain regions from the index.csv names
@@ -54,36 +53,18 @@ top_regs_num = 5
 comp_groups = ['ST','SW','TW']
 for comparison in comp_groups:
     df_comp = df.sort_values(by=[comparison], ascending=True)
-    top = pd.DataFrame({'Abbreviation': df_comp.iloc[:,0], '{} p-value'.format(comparison): df_comp.loc[:,comparison]}).head(top_regs_num)
+    top = pd.DataFrame({'Abbreviation': df_comp.iloc[:,0], 'Structure': [name_dict[key] for key in df_comp.iloc[:,0]], 'p-values': df_comp.loc[:,comparison]}).head(top_regs_num)
     top_regs.append(top) # Append relevant regions based on comparison group to empty top_regs list
 
 # Replace naming convention for different treatment groups to more accurately describe exercise conditions
 df_vol = df_vol.replace({"Treatment": "wheel_only"}, "voluntary")
-df_vol = df_vol.replace({"Treatment": "treadmill"}, "voluntary\n+ enforced")
+df_vol = df_vol.replace({"Treatment": "treadmill"}, "voluntary + enforced")
 
-# %% VIOLIN PLOTS
-sns.set_theme()
-sns.set(font_scale = 1.2)
+# %% DATAFRAME OUTPUT
+os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files")
+for ind in range(len(comp_groups)):
+    top_regs[ind].to_csv('top_regions_{}.csv'.format(comp_groups[ind].lower()), encoding='utf-8')
 
-title_groups = ['Sedentary vs. Voluntary + Enforced Exercise','Sedentary vs. Voluntary Exercise','Voluntary vs. Voluntary + Forced Exercise']
-title_dict = {comp_groups[i]: title_groups[i] for i in range(len(comp_groups))} # Define dictionary to associate each comparison condition to the full comparison title
-
-plot_num = 3
-for listframe in range(len(comp_groups)): # This loop iterates through each comparison condition (within the comp_groups list); results in 3 output figures
-    fig, axes = plt.subplots(1, plot_num, figsize=(15, 5))
-    fig.suptitle('Most Significant Regions via Post-Hoc Analysis\n({})'.format(title_dict[comp_groups[listframe]]),
-                 y=1.15, fontsize=16)
-    fig.text(0.04, 0.5, 'Regional Proportion', va='center', rotation='vertical')
-    for val in range(plot_num): # This list iterates through each plot within a given figure (for the top significant regions as specified by plot_num)
-        name = top_regs[listframe].iloc[val,0]
-        reg = name_dict[name]
-        sns.violinplot(ax = axes[val], x = "Treatment", y = name, data = df_vol.filter(['Treatment', name], axis=1)).set_ylabel("")
-        axes[val].set_title(reg, fontsize = 14)
-        axes[val].set_xlabel("")
-    # Save figures in specified folder
-    plt.show()
-    #plt.savefig('{}/{}.png'.format('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures',
-                                   #comp_groups[listframe]))
 
 
 
