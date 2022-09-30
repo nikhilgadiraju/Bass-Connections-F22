@@ -34,6 +34,7 @@ for (i in 1:(len-1))  {
   tempname=rownames(pvalsresults)[i]
   res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data, effect.size='pes')
   aov_table = get_anova_table(res.aov)
+  
   lm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
   eff=eta_squared(lm, partial = TRUE)
   an = anova(lm)
