@@ -20,26 +20,40 @@ data=na.omit(data)
 data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]] 
 
 # Create blank matrix to represent p values (column) for each brain regions (rows)
-pvalsresults=matrix(NA,(dim(data)[2]-1)  , 3 )
+colnames_vec = c("FDR corrected Pvalue", "Effect Size Eta^2", 
+                 "CI lower bound", "CI upper bound", 
+                 "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
+                 "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group", 
+                 "F-value")
+pvalsresults=matrix(NA,(dim(data)[2]-1), length(colnames_vec))
 rownames(pvalsresults)=names(data)[2:dim(data)[2]]
-colnames(pvalsresults)= c("Treatment", "PES Effect Size", "Sha-Wilk norm")
+colnames(pvalsresults)=colnames_vec
 
 # Populate created matrix with ANOVA-generated p-values
 # Returning Partial Eta Squared (PES) effect size since we're using ANOVAs for each given brain region. Note
-# that Cohen's d can be used however those are typically utilized when diong a t-test and evaluating a difference 
+# that Cohen's d can be used however those are typically utilized when doing a t-test and evaluating a difference 
 # between two groups
 # Reference: https://www.youtube.com/watch?v=e5od9tH_QUo
+
+# Comparison between ANOVA and linear model: 
+# https://stats.libretexts.org/Bookshelves/Applied_Statistics/Book%3A_Learning_Statistics_with_R_-_A_tutorial_for_Psychology_Students_and_other_Beginners_(Navarro)/16%3A_Factorial_ANOVA/16.06%3A_ANOVA_As_a_Linear_Model
 len = dim(data)[2]
 for (i in 1:(len-1))  {
   tempname=rownames(pvalsresults)[i]
+  
   res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data, effect.size='pes')
   aov_table = get_anova_table(res.aov)
   
   lm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
-  eff=eta_squared(lm, partial = TRUE)
-  an = anova(lm)
-  pvalsresults[i,1] <- aov_table$p
-  pvalsresults[i,2] <- aov_table$pes
+  eff=eta_squared(lm, partial = FALSE)
+
+  means=by(data[,i+1],as.factor(data$Treatment), mean)
+  sds=by(data[,i+1],as.factor(data$Treatment), sd)
+  
+  val_list = c(aov_table$p, aov_table$pes, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F)
+  for (j in seq_along(val_list)){
+    pvalsresults[i,j] <- val_list[j]
+  }
 }
 
 # Create new 'pvalsresultadjusted' variable to eventually populated with FDR-corrected values
@@ -56,22 +70,23 @@ pvalsresultsadjusted[,1] = p.adjust(pvalsresultsadjusted[,1], "fdr") #Benjamini 
 
 
 # Filter 'pvalsresultesadjusted' table to display brain regions that have significant p values (p<0.05)
-sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,1] 
-posthoc=matrix(NA,length(sig),4)
-posthoc[,1]=sig
+sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,] 
+posthoc=matrix(NA,dim(sig)[1],length(colnames_vec)+3)
+posthoc[,1]=sig[,1]
 
 # Loop through each brain region and conduct a Tukey test and report p-values for each comparison group
-for (i in 1:length(sig)) {
-  tempname=names(sig)[i]
+for (i in 1:dim(sig)[1]) {
+  tempname=rownames(sig)[i]
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
   tuk=tukey_hsd(res.aov)
   posthoc[i,2:4]=tuk$p.adj
+  posthoc[i,5:dim(posthoc)[2]] = sig[i,2:dim(sig)[2]]
 }
 
 # Construct output CSV and save
-colnames(posthoc)=c("FDR","ST","SW","TW")
-rownames(posthoc)=names(sig)
-write.csv(posthoc, 'posthoc_standard.csv')
+colnames(posthoc)=c(colnames(sig)[1],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",colnames(sig)[-1])
+rownames(posthoc)=rownames(sig)
+write.csv(posthoc, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/posthoc_standard.csv')
 
 # Update Treatment names
 gsub("wheel_only", "Voluntary", data[,"Treatment"])
