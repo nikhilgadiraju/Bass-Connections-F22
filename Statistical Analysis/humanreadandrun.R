@@ -7,6 +7,8 @@ library(ggplot2)
 library(patchwork)
 library(ggeasy)
 library(hash)
+library(emmeans)
+library(effectsize)
 
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
@@ -20,28 +22,39 @@ data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]]
 # Create blank matrix to represent p values (column) for each brain regions (rows)
 pvalsresults=matrix(NA,(dim(data)[2]-1)  , 3 )
 rownames(pvalsresults)=names(data)[2:dim(data)[2]]
-colnames(pvalsresults)= c("treatment", "homogen", "Sha-Wilk norm")
+colnames(pvalsresults)= c("Treatment", "PES Effect Size", "Sha-Wilk norm")
 
-# Populate cretaed matrix with ANOVA-generated p-values
+# Populate created matrix with ANOVA-generated p-values
+# Returning Partial Eta Squared (PES) effect size since we're using ANOVAs for each given brain region. Note
+# that Cohen's d can be used however those are typically utilized when diong a t-test and evaluating a difference 
+# between two groups
+# Reference: https://www.youtube.com/watch?v=e5od9tH_QUo
 len = dim(data)[2]
 for (i in 1:(len-1))  {
-   
   tempname=rownames(pvalsresults)[i]
-  res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data)
-  a = get_anova_table(res.aov)
-  p = a$p
-  pvalsresults[i,1] <- p
+  res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data, effect.size='pes')
+  aov_table = get_anova_table(res.aov)
+  lm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
+  eff=eta_squared(lm, partial = TRUE)
+  an = anova(lm)
+  pvalsresults[i,1] <- aov_table$p
+  pvalsresults[i,2] <- aov_table$pes
 }
 
 # Create new 'pvalsresultadjusted' variable to eventually populated with FDR-corrected values
 pvalsresultsadjusted=pvalsresults
 
 ###adjust pvalues Benjamini & Hochberg
-# for (j in 1:dim(pvalsresultsadjusted)[2]) {
+# To understand what we're doing here, we are comparing all the p-values determined from the ANOVAs conducted on all
+# 332 brain regions. Because we can treat each ANOVA as an individual hypothesis test, we need to account for the 
+# multiple comparisons effect in the type 1 error rate. This can be done using various P-value (or significance) 
+# correction methods, but we will be using the Benjamini & Hochberg Correction method (specified by either 'BH or 'fdr')
+# References: https://www.youtube.com/watch?v=rZKa4tW2NKs&t=483s
+#             https://www.youtube.com/watch?v=K8LQSvtjcEo&t=43s
 pvalsresultsadjusted[,1] = p.adjust(pvalsresultsadjusted[,1], "fdr") #Benjamini & Hochberg
-# }
 
-# Filter 'pvalsresultesadjusted' table to display brain regions that have signficant p values (p<0.05)
+
+# Filter 'pvalsresultesadjusted' table to display brain regions that have significant p values (p<0.05)
 sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,1] 
 posthoc=matrix(NA,length(sig),4)
 posthoc[,1]=sig
