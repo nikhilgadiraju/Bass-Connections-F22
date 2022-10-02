@@ -2,3 +2,4 @@ BassVenv/
 .DS_Store
 .idea
 Statistical Analysis/rba_volume.R
+Scripts/__pycache__/

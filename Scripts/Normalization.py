@@ -15,6 +15,7 @@ import pandas as pd
 from itertools import product
 import statistics
 import nibabel as nib
+from VoxVol_Treatment import id_updated_df
 
 # %% Defining file paths
 # MAIN file paths; (fpath_main) this is where this python script is found as well as the folders indicated in the below file paths; (fpath_dat_main) This is where all input and output data is stored
@@ -285,8 +286,7 @@ cols = product(regs_abbrev, ['Mean_int', 'Z-score'])
 columnsarr = pd.MultiIndex.from_tuples([('Filename', ''), ('ID', '')] + list(cols))
 
 # Adding treatment column
-os.chdir(fpath_id_treatment_csv)
-id_treatment = pd.read_csv("ID_Treatment.csv")
+id_treatment = id_updated_df
 treatment_dict = id_treatment.set_index('ID')["Treatment"].to_dict()
 id_vv = pd.Series(out_df_vv.loc[:,"ID"])
 
