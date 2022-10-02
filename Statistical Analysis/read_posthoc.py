@@ -42,6 +42,7 @@ df_vol = pd.read_csv("/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Ba
 
 # %% DATA PROCESSING
 # Utilize the defined functions to create updated structures and abbreviation lists to eventually store through a dictionary
+df = df.rename(columns={"ST Comparison Group Pvalue": 'ST', 'SW Comparison Group Pvalue': 'SW', 'TW Comparison Group Pvalue': 'TW'})
 index_df = index.iloc[:,0:3]
 structure_updated = list(map(lambda x,y: structure_update(x,y), index_df["Structure"], index_df["Hemisphere"]))
 abbreviation_updated = list(map(lambda x,y: abbreviation_update(x,y), index_df["Abbreviation"], index_df["Hemisphere"]))
