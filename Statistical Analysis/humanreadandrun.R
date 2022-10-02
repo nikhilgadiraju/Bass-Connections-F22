@@ -9,12 +9,13 @@ library(ggeasy)
 library(hash)
 library(emmeans)
 library(effectsize)
+library(reticulate)
 
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
 
   # Replace appended "X" to region names due to read.csv wrapper
-old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][2:length(old_colnames)]
+old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
 new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
 
@@ -94,6 +95,10 @@ colnames(posthoc)=c(colnames(sig)[1],"ST Comparison Group Pvalue","SW Comparison
 rownames(posthoc)=rownames(sig)
 write.csv(posthoc, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/posthoc_standard.csv')
 
+# Run read_posthoc.py
+setwd("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis")
+system("python read_posthoc.py", wait=TRUE)
+
 # Update Treatment names
 gsub("wheel_only", "Voluntary", data[,"Treatment"])
 gsub("treadmill", "Voluntary + Enforced", data[,"Treatment"])
@@ -106,7 +111,7 @@ dict[["sw"]] = "Sendentary vs. Voluntary Exercise"
 dict[["tw"]] = "Voluntary vs. Voluntary + Forced Exercise"
 
 # Read top regions CSVs
-comparison = 'sw' # 'st', 'sw', or 'tw'
+comparison = 'st' # 'st', 'sw', or 'tw'
 print(comparison)
 top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/top_regions_',comparison,'.csv',sep=""))
 
