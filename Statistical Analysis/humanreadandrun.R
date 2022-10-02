@@ -12,6 +12,12 @@ library(effectsize)
 
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
+
+  # Replace appended "X" to region names due to read.csv wrapper
+old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][2:length(old_colnames)]
+new_colnames = sub('.','',old_colnames)
+colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
+
 data=data[  , -c(1,2,3)] 
 dim(data)
 data=na.omit(data) 
