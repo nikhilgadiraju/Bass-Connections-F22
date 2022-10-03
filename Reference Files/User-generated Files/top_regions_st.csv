@@ -1,6 +1,6 @@
 ,Abbreviation,Structure,p-values
-49,cp_L,Cerebral Peduncle (L),5.52e-08
-111,cp_R,Cerebral Peduncle (R),2.28e-07
-34,Iped_L,Interpeduncular Nucleus (L),5.32e-07
-80,GP_R,Globus Pallidus (R),9.16e-07
-84,VTA_R,Ventral Tegmental Area (R),2.65e-06
+35,cp_L,Cerebral Peduncle (L),5.52e-08
+26,Iped_L,Interpeduncular Nucleus (L),5.32e-07
+61,GP_R,Globus Pallidus (R),9.16e-07
+65,VTA_R,Ventral Tegmental Area (R),2.65e-06
+90,vsc_R,Ventral Spinocerebellar Tract (R),2.7e-06

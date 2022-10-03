@@ -1,6 +1,6 @@
 ,Abbreviation,Structure,p-values
-47,vhc_L,Ventral Hippocampal Commissure (L),0.00965
-53,Post_L,Postsubiculum (L),0.0132
-55,MiTg_L,Microcellular Tegmental Nucleus (L),0.0143
-80,GP_R,Globus Pallidus (R),0.0227
-76,PRh_R,Perirhinal Cortex (R),0.0357
+34,vhc_L,Ventral Hippocampal Commissure (L),0.00965
+38,Post_L,Postsubiculum (L),0.0132
+39,MiTg_L,Microcellular Tegmental Nucleus (L),0.0143
+61,GP_R,Globus Pallidus (R),0.0227
+57,PaS_R,Parasubiculum (R),0.0357
