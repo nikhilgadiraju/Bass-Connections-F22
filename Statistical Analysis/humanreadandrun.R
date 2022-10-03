@@ -10,6 +10,7 @@ library(hash)
 library(emmeans)
 library(effectsize)
 library(reticulate)
+library(car)
 
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
@@ -31,7 +32,7 @@ colnames_vec = c("FDR corrected Pvalue", "Effect Size Eta^2",
                  "CI lower bound", "CI upper bound", 
                  "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
                  "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group", 
-                 "F-value", "Shapiro-Wilk Pvalue")
+                 "F-value", "Shapiro-Wilk Pvalue (norm)", "Levene Test Pvalue (homog)")
 pvalsresults=matrix(NA,(dim(data)[2]-1), length(colnames_vec))
 rownames(pvalsresults)=names(data)[2:dim(data)[2]]
 colnames(pvalsresults)=colnames_vec
@@ -54,12 +55,18 @@ for (i in 1:(len-1))  {
   lm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
   eff=eta_squared(lm, partial = FALSE)
   
+  # Ho: data come from a normal distribution, H1: data do not come from a normal distribution
+  # If p > 0.05, do NOT reject null, and thus data is normal
   normality = shapiro.test(lm$residuals)
+  
+  # Ho: variances are equal, H1: at least one variance is different
+  # If p > 0.05, do NOT reject null, and thus data has equal variances (homogeneity == equality of variances)
+  homogeneity = leveneTest(get(tempname) ~ as.factor(Treatment), data=data)
 
   means=by(data[,i+1],as.factor(data$Treatment), mean)
   sds=by(data[,i+1],as.factor(data$Treatment), sd)
   
-  val_list = c(aov_table$p, eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F, normality$p.value) #>0.05
+  val_list = c(aov_table$p, eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05 
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
