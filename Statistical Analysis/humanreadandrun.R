@@ -31,7 +31,7 @@ colnames_vec = c("FDR corrected Pvalue", "Effect Size Eta^2",
                  "CI lower bound", "CI upper bound", 
                  "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
                  "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group", 
-                 "F-value")
+                 "F-value", "Shapiro-Wilk Pvalue")
 pvalsresults=matrix(NA,(dim(data)[2]-1), length(colnames_vec))
 rownames(pvalsresults)=names(data)[2:dim(data)[2]]
 colnames(pvalsresults)=colnames_vec
@@ -48,16 +48,18 @@ len = dim(data)[2]
 for (i in 1:(len-1))  {
   tempname=rownames(pvalsresults)[i]
   
-  res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data, effect.size='pes')
+  res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data)
   aov_table = get_anova_table(res.aov)
   
   lm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
   eff=eta_squared(lm, partial = FALSE)
+  
+  normality = shapiro.test(lm$residuals)
 
   means=by(data[,i+1],as.factor(data$Treatment), mean)
   sds=by(data[,i+1],as.factor(data$Treatment), sd)
   
-  val_list = c(aov_table$p, aov_table$pes, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F)
+  val_list = c(aov_table$p, eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F, normality$p.value) #>0.05
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
