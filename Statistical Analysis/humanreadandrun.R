@@ -86,7 +86,10 @@ pvalsresultsadjusted[,1] = p.adjust(pvalsresultsadjusted[,1], "fdr") #Benjamini 
 
 
 # Filter 'pvalsresultesadjusted' table to display brain regions that have significant p values (p<0.05)
-sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,] 
+#sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,] 
+sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05 & 
+                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 &
+                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,]
 posthoc=matrix(NA,dim(sig)[1],length(colnames_vec)+3)
 posthoc[,1]=sig[,1]
 
