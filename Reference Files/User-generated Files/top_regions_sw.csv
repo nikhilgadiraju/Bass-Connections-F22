@@ -1,6 +1,6 @@
 ,Abbreviation,Structure,p-values
-84,VTA_R,Ventral Tegmental Area (R),1.56e-07
-49,cp_L,Cerebral Peduncle (L),2.09e-07
-111,cp_R,Cerebral Peduncle (R),2.39e-07
-34,Iped_L,Interpeduncular Nucleus (L),1.25e-06
-92,Iped_R,Interpeduncular Nucleus (R),3.6e-06
+65,VTA_R,Ventral Tegmental Area (R),1.56e-07
+35,cp_L,Cerebral Peduncle (L),2.09e-07
+26,Iped_L,Interpeduncular Nucleus (L),1.25e-06
+90,vsc_R,Ventral Spinocerebellar Tract (R),4.11e-06
+81,DTg_R,Dorsal Tegmentum (R),1.4e-05
