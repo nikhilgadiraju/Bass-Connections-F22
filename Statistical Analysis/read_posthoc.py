@@ -33,8 +33,8 @@ def abbreviation_update(abbrev, hemisphere):
 
 
 # %% DATA IMPORTS
-# FILE: posthoc_standard.csv
-df = pd.read_csv("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/posthoc_standard.csv")
+# FILE: posthoc_comparison_stats.csv
+df = pd.read_csv("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/posthoc_comparison_stats.csv")
 # FILE: index.csv
 index = pd.read_csv("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/Absolute Files/index.csv")
 # FILE: voxelvolumes.csv
@@ -50,7 +50,7 @@ name_dict = {abbreviation_updated[i]: structure_updated[i] for i in range(len(ab
 
 # Sort through posthoc_standard.csv to identify relevant regions for each comparison group based on corrected p-value
 top_regs = []
-top_regs_num = 5
+top_regs_num = 10
 comp_groups = ['ST','SW','TW']
 for comparison in comp_groups:
     df_comp = df.sort_values(by=[comparison], ascending=True)
