@@ -74,8 +74,8 @@ df_vol = df_vol.replace({"Treatment": "treadmill"}, "voluntary + enforced")
 # %% DATAFRAME OUTPUT
 os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files")
 for ind in range(len(comp_groups)):
-    top_regs_pos[ind].to_csv('top_regions_{}.csv'.format(comp_groups[ind].lower()), encoding='utf-8', mode='w', index=False)
-    top_regs_neg[ind].to_csv('top_regions_{}.csv'.format(comp_groups[ind].lower()), encoding='utf-8', mode='a', index=False)
+    top_regs_pos[ind].to_csv('{0}_regs/top_pos_regions_{0}.csv'.format(comp_groups[ind].lower()), encoding='utf-8', mode='w', index=False)
+    top_regs_neg[ind].to_csv('{0}_regs/top_neg_regions_{0}.csv'.format(comp_groups[ind].lower()), encoding='utf-8', mode='w', index=False)
 
 
 

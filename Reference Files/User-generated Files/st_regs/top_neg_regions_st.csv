@@ -1,15 +1,4 @@
 Abbreviation,Structure,P-value,Effect Size
-cp_L,Cerebral Peduncle (L),5.52e-08,4.00503054632247
-Iped_L,Interpeduncular Nucleus (L),5.32e-07,3.15931017024744
-GP_R,Globus Pallidus (R),9.16e-07,3.07364981222447
-vsc_R,Ventral Spinocerebellar Tract (R),2.7e-06,2.97582987709872
-mcp_R,Middle Cerebellar Peduncle (R),3.76e-06,2.88136517928446
-VTA_R,Ventral Tegmental Area (R),2.65e-06,2.79180954595566
-DTg_R,Dorsal Tegmentum (R),6.01e-06,2.7463201198527
-Hyp_R,Hypothalamus (R),2.92e-06,2.63313774688686
-SC_L,Superior Colliculus (L),0.000113,2.58216052714127
-mcp_L,Middle Cerebellar Peduncle (L),3.47e-05,2.55357253849355
-Abbreviation,Structure,P-value,Effect Size
 MEnt_R,Medial Entorhinal Cortex (R),0.000118,-2.49981338968229
 S1HL_R,Primary Somatosensory Cortex Hindlimb Region (R),5.06e-05,-2.37017275978977
 V1M_R,Primary Visual Cortex Monocular Area (R),0.000145,-2.36798810168686
