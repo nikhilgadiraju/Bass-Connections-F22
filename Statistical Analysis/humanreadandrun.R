@@ -90,7 +90,7 @@ pvalsresultsadjusted[,1] = p.adjust(pvalsresultsadjusted[,1], "fdr") #Benjamini 
 sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05 & 
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 &
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,]
-posthoc=matrix(NA,dim(sig)[1],length(colnames_vec)+3)
+posthoc=matrix(NA,dim(sig)[1],length(colnames_vec)+(2*dim(tuk)[1]))
 posthoc[,1]=sig[,1]
 
 # Loop through each brain region and conduct a Tukey test and report p-values for each comparison group
@@ -98,12 +98,17 @@ for (i in 1:dim(sig)[1]) {
   tempname=rownames(sig)[i]
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
   tuk=tukey_hsd(res.aov)
+  for (j in 1:dim(tuk)[1]){
+    hedges_out = hedges_g(get(tempname) ~ factor(Treatment, levels=c(tuk$group1[j], tuk$group2[j])), data=data)
+    posthoc[i,j+4]=hedges_out$Hedges_g # Go through columns 5, 6, 7
+  }
   posthoc[i,2:4]=tuk$p.adj
-  posthoc[i,5:dim(posthoc)[2]] = sig[i,2:dim(sig)[2]]
+  posthoc[i,8:dim(posthoc)[2]] = sig[i,2:dim(sig)[2]]
 }
 
 # Construct output CSV and save
-colnames(posthoc)=c(colnames(sig)[1],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",colnames(sig)[-1])
+colnames(posthoc)=c(colnames(sig)[1],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",
+                    "ST Comparison Group Effect Size","SW Comparison Group Effect Size","TW Comparison Group Effect Size", colnames(sig)[-1])
 rownames(posthoc)=rownames(sig)
 write.csv(posthoc, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/posthoc_standard.csv')
 
