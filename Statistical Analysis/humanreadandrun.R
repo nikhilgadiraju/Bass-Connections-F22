@@ -100,8 +100,8 @@ for (i in 1:dim(sig)[1]) {
   tempname=rownames(sig)[i]
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
   tuk=tukey_hsd(res.aov)
-  control = c('sedentary', 'sedentary', 'wheel_only')
-  treatment = c('wheel_only', 'treadmill', 'treadmill')
+  treatment = c('sedentary', 'sedentary', 'wheel_only')
+  control = c('wheel_only', 'treadmill', 'treadmill')
   for (j in 1:length(control)){
     hedges_out = hedges_g(get(tempname) ~ factor(Treatment, levels=c(control[j], treatment[j])), data=data)
     posthoc[i,j+4]=hedges_out$Hedges_g #Go through columns 5, 6, 7

@@ -1,11 +1,11 @@
 Abbreviation,Structure,P-value,Effect Size
-MEnt_R,Medial Entorhinal Cortex (R),0.000926,-2.49981338968229
-S1HL_R,Primary Somatosensory Cortex Hindlimb Region (R),0.00291,-2.37017275978977
-V1M_R,Primary Visual Cortex Monocular Area (R),0.0116,-2.36798810168686
-S1HL_L,Primary Somatosensory Cortex Hindlimb Region (L),0.00315,-2.10043305298029
-VIEnt_R,Ventral Intermediate Entorhinal Cortex (R),0.00168,-2.00760585615256
-PRh_L,Perirhinal Cortex (L),0.00956,-1.97304623679323
-V2ML_L,Secondary Visual Cortex Mediolateral Area (L),0.0174,-1.85669303022507
-DLEnt_L,Dorsolateral Entorhinal Cortex (L),0.00224,-1.73365943649753
-V2ML_R,Secondary Visual Cortex Mediolateral Area (R),0.0118,-1.67647179819113
-DIEnt_R,Dorsal Intermediate Entorhinal Cortex (R),0.000544,-1.62150395940442
+cp_L,Cerebral Peduncle (L),2.09e-07,-4.00503054632247
+Iped_L,Interpeduncular Nucleus (L),1.25e-06,-3.15931017024744
+GP_R,Globus Pallidus (R),0.000917,-3.07364981222447
+vsc_R,Ventral Spinocerebellar Tract (R),4.11e-06,-2.97582987709872
+mcp_R,Middle Cerebellar Peduncle (R),2.18e-05,-2.88136517928446
+VTA_R,Ventral Tegmental Area (R),1.56e-07,-2.79180954595566
+DTg_R,Dorsal Tegmentum (R),1.4e-05,-2.7463201198527
+Hyp_R,Hypothalamus (R),1.4e-05,-2.63313774688686
+SC_L,Superior Colliculus (L),0.00855,-2.58216052714127
+mcp_L,Middle Cerebellar Peduncle (L),1.65e-05,-2.55357253849355

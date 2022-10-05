@@ -1,11 +1,11 @@
 Abbreviation,Structure,P-value,Effect Size
-VTA_R,Ventral Tegmental Area (R),2.65e-06,3.32908586220099
-cp_L,Cerebral Peduncle (L),5.52e-08,3.24901844342757
-mcp_R,Middle Cerebellar Peduncle (R),3.76e-06,2.9078632126352
-Hyp_R,Hypothalamus (R),2.92e-06,2.86975852537315
-Iped_L,Interpeduncular Nucleus (L),5.32e-07,2.86534363912312
-vsc_R,Ventral Spinocerebellar Tract (R),2.7e-06,2.71428023047848
-mcp_L,Middle Cerebellar Peduncle (L),3.47e-05,2.60007303314341
-DTg_R,Dorsal Tegmentum (R),6.01e-06,2.59387644042889
-SN_R,Substantia Nigra (R),4.15e-05,2.54309301638933
-DTg_L,Dorsal Tegmentum (L),0.000255,2.33406465785998
+S1HL_L,Primary Somatosensory Cortex Hindlimb Region (L),8.84e-05,2.64351271012204
+DIEnt_R,Dorsal Intermediate Entorhinal Cortex (R),0.00349,2.04527054408817
+MEnt_R,Medial Entorhinal Cortex (R),0.000118,1.94523282444189
+VIEnt_R,Ventral Intermediate Entorhinal Cortex (R),0.000725,1.94278920619168
+Au1_L,Primary Auditory Cortex (L),0.0416,1.78580692319163
+V1B_L,Primary Visual Cortex Binocular Area (L),0.00393,1.78275670564328
+DLEnt_L,Dorsolateral Entorhinal Cortex (L),0.00125,1.68632960632229
+V2ML_L,Secondary Visual Cortex Mediolateral Area (L),0.000252,1.62160924279678
+Ins_R,Insular Cortex (R),0.00875,1.61600275485718
+S1HL_R,Primary Somatosensory Cortex Hindlimb Region (R),5.06e-05,1.61489388229038
