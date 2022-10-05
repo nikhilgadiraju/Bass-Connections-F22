@@ -127,9 +127,9 @@ data[,"Treatment"] = data[,"Treatment"] %>% str_replace_all(c("wheel_only" = "Vo
 
 # Define figure title hash/dict
 dict <- hash()
-dict[["st"]] = "Sendentary vs. Voluntary + Forced Exercise"
-dict[["sw"]] = "Sendentary vs. Voluntary Exercise"
-dict[["tw"]] = "Voluntary vs. Voluntary + Forced Exercise"
+dict[["st"]] = c("Sendentary", "Voluntary + Forced")
+dict[["sw"]] = c("Sendentary", "Voluntary")
+dict[["tw"]] = c("Voluntary", "Voluntary + Forced")
 
 # Read top regions CSVs
 for (j in c('positive', 'negative')) {
@@ -162,7 +162,7 @@ for (j in c('positive', 'negative')) {
     patchwork <- p1 + p2 + p3
     full_plot <- patchwork + plot_annotation(
       title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
-      subtitle = dict[[comparison]],
+      #subtitle = dict[[comparison]],
       caption = 'DRAFT',
       theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     )
