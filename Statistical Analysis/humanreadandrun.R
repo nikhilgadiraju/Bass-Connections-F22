@@ -11,6 +11,7 @@ library(emmeans)
 library(effectsize)
 library(reticulate)
 library(car)
+library(stringr)
 
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
@@ -90,7 +91,8 @@ pvalsresultsadjusted[,1] = p.adjust(pvalsresultsadjusted[,1], "fdr") #Benjamini 
 sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05 & 
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 &
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,]
-posthoc=matrix(NA,dim(sig)[1],length(colnames_vec)+3)
+
+posthoc = matrix(NA,dim(sig)[1],7)
 posthoc[,1]=sig[,1]
 
 # Loop through each brain region and conduct a Tukey test and report p-values for each comparison group
@@ -98,23 +100,30 @@ for (i in 1:dim(sig)[1]) {
   tempname=rownames(sig)[i]
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
   tuk=tukey_hsd(res.aov)
+  treatment = c('sedentary', 'sedentary', 'wheel_only')
+  control = c('wheel_only', 'treadmill', 'treadmill')
+  for (j in 1:length(control)){
+    hedges_out = hedges_g(get(tempname) ~ factor(Treatment, levels=c(control[j], treatment[j])), data=data)
+    posthoc[i,j+4]=hedges_out$Hedges_g #Go through columns 5, 6, 7
+  }
   posthoc[i,2:4]=tuk$p.adj
-  posthoc[i,5:dim(posthoc)[2]] = sig[i,2:dim(sig)[2]]
 }
 
 # Construct output CSV and save
-colnames(posthoc)=c(colnames(sig)[1],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",colnames(sig)[-1])
+colnames(posthoc)=c(colnames(sig)[1],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",
+                    "ST Comparison Group Effect Size","SW Comparison Group Effect Size","TW Comparison Group Effect Size")
 rownames(posthoc)=rownames(sig)
-write.csv(posthoc, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/posthoc_standard.csv')
+
+# Write output
+write.csv(sig, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/posthoc_group_stats.csv')
+write.csv(posthoc, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/posthoc_comparison_stats.csv')
 
 # Run read_posthoc.py
-setwd("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis")
-system("python read_posthoc.py", wait=TRUE)
+setwd("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22")
+system("source BassVenv/bin/activate && python 'Statistical Analysis'/read_posthoc.py", wait=TRUE)
 
 # Update Treatment names
-gsub("wheel_only", "Voluntary", data[,"Treatment"])
-gsub("treadmill", "Voluntary + Enforced", data[,"Treatment"])
-gsub("sedentary", "Sedentary", data[,"Treatment"])
+data[,"Treatment"] = data[,"Treatment"] %>% str_replace_all(c("wheel_only" = "Voluntary", "treadmill" = "Voluntary + Enforced", "sedentary" = "Sedentary"))
 
 # Define figure title hash/dict
 dict <- hash()
@@ -123,39 +132,43 @@ dict[["sw"]] = "Sendentary vs. Voluntary Exercise"
 dict[["tw"]] = "Voluntary vs. Voluntary + Forced Exercise"
 
 # Read top regions CSVs
-comparison = 'st' # 'st', 'sw', or 'tw'
-print(comparison)
-top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/top_regions_',comparison,'.csv',sep=""))
-
-# Basic Violin Plots
-sig_reg = top_comp$Abbreviation
-reg_struc = top_comp$Structure
-pvals_regs = formatC(top_comp$p.values, format = "e", digits = 2)
-
-p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + 
-  geom_violin() + geom_boxplot(width=0.1) +
-  labs(title=reg_struc[1], subtitle=paste("p-value of ",toString(pvals_regs[1])), y="Normalized Regional Proportion (%)", x="") + theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.y = element_text(margin = margin(r = 10)))
-
-p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
-  geom_violin() + geom_boxplot(width=0.1) + 
-  labs(title=reg_struc[2], subtitle=paste("p-value of ",toString(pvals_regs[2])), y="", x="Treatment Conditions") + theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.x = element_text(margin = margin(t = 10)))
-
-p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
-  geom_violin() + geom_boxplot(width=0.1) + 
-  labs(title=reg_struc[3], subtitle=paste("p-value of ",toString(pvals_regs[3])), y="", x="") + theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
-
-# Add total figure titles
-patchwork <- p1 + p2 + p3
-full_plot <- patchwork + plot_annotation(
-  title = 'Regions of Significance following Post-Hoc Analysis',
-  subtitle = dict[[comparison]],
-  caption = 'DRAFT',
-  theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
-)
-
-# Saving Plots
-File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",comparison,'.png',sep="")
-ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
+for (j in c('positive', 'negative')) {
+  for (i in c('st','sw','tw')) {
+    comparison = i # 'st', 'sw', or 'tw'
+    top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/',comparison,'_regs/top_',substr(j,1,3),'_regions_',comparison,'.csv',sep=""))
+    
+    # Basic Violin Plots
+    sig_reg = top_comp$Abbreviation
+    reg_struc = top_comp$Structure
+    pvals_regs = formatC(top_comp$P.value, format = "e", digits = 2)
+    eff_sizes = formatC(top_comp$Effect.Size, format = "e", digits = 2)
+    
+    p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + 
+      geom_violin() + geom_boxplot(width=0.1) +
+      labs(title=reg_struc[1], subtitle=paste("P-value of ",toString(pvals_regs[1])," | Effect size of ",toString(eff_sizes[1])), y="Normalized Regional Proportion (%)", x="") + theme_bw() +
+      theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.y = element_text(margin = margin(r = 10)))
+    
+    p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
+      geom_violin() + geom_boxplot(width=0.1) + 
+      labs(title=reg_struc[2], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[2])), x="Treatment Conditions", y="") + theme_bw() +
+      theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.x = element_text(margin = margin(t = 10)))
+    
+    p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
+      geom_violin() + geom_boxplot(width=0.1) + 
+      labs(title=reg_struc[3], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[3])), y="", x="") + theme_bw() +
+      theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+    
+    # Add total figure titles
+    patchwork <- p1 + p2 + p3
+    full_plot <- patchwork + plot_annotation(
+      title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
+      subtitle = dict[[comparison]],
+      caption = 'DRAFT',
+      theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+    )
+    
+    # Saving Plots
+    File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
+    ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
+  }
+}
