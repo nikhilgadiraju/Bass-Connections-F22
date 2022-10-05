@@ -1,11 +1,11 @@
 Abbreviation,Structure,P-value,Effect Size
-S1HL_L,Primary Somatosensory Cortex Hindlimb Region (L),0.00315,-2.64351271012204
-sc_R,Spinocerebellar Tract (R),0.00159,-2.05171584737548
-DIEnt_R,Dorsal Intermediate Entorhinal Cortex (R),0.000544,-2.04527054408817
-MEnt_R,Medial Entorhinal Cortex (R),0.000926,-1.94523282444189
-VIEnt_R,Ventral Intermediate Entorhinal Cortex (R),0.00168,-1.94278920619168
-Au1_L,Primary Auditory Cortex (L),0.00526,-1.78580692319163
-V1B_L,Primary Visual Cortex Binocular Area (L),0.00275,-1.78275670564328
-DLEnt_L,Dorsolateral Entorhinal Cortex (L),0.00224,-1.68632960632229
-V2ML_L,Secondary Visual Cortex Mediolateral Area (L),0.0174,-1.62160924279678
-Ins_R,Insular Cortex (R),0.00212,-1.61600275485718
+MEnt_R,Medial Entorhinal Cortex (R),0.000926,-2.49981338968229
+S1HL_R,Primary Somatosensory Cortex Hindlimb Region (R),0.00291,-2.37017275978977
+V1M_R,Primary Visual Cortex Monocular Area (R),0.0116,-2.36798810168686
+S1HL_L,Primary Somatosensory Cortex Hindlimb Region (L),0.00315,-2.10043305298029
+VIEnt_R,Ventral Intermediate Entorhinal Cortex (R),0.00168,-2.00760585615256
+PRh_L,Perirhinal Cortex (L),0.00956,-1.97304623679323
+V2ML_L,Secondary Visual Cortex Mediolateral Area (L),0.0174,-1.85669303022507
+DLEnt_L,Dorsolateral Entorhinal Cortex (L),0.00224,-1.73365943649753
+V2ML_R,Secondary Visual Cortex Mediolateral Area (R),0.0118,-1.67647179819113
+DIEnt_R,Dorsal Intermediate Entorhinal Cortex (R),0.000544,-1.62150395940442
