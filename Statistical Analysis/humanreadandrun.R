@@ -136,7 +136,7 @@ for (j in c('positive', 'negative')) {
   for (i in c('st','sw','tw')) {
     comparison = i # 'st', 'sw', or 'tw'
     top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/',comparison,'_regs/top_',substr(j,1,3),'_regions_',comparison,'.csv',sep=""))
-    data_comp = data[data$Treatment %in% dict[[i]],]
+    # data_comp = data[data$Treatment %in% dict[[i]],]
     
     # Basic Violin Plots
     sig_reg = top_comp$Abbreviation
@@ -144,17 +144,17 @@ for (j in c('positive', 'negative')) {
     pvals_regs = formatC(top_comp$P.value, format = "e", digits = 2)
     eff_sizes = formatC(top_comp$Effect.Size, format = "e", digits = 2)
     
-    p1 <- ggplot(data_comp, aes_string(x="Treatment", y=sig_reg[1])) + 
+    p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + 
       geom_violin() + geom_boxplot(width=0.1) +
       labs(title=reg_struc[1], subtitle=paste("P-value of ",toString(pvals_regs[1])," | Effect size of ",toString(eff_sizes[1])), y="Normalized Regional Proportion (%)", x="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.y = element_text(margin = margin(r = 10)))
     
-    p2 <- ggplot(data_comp, aes_string(x="Treatment", y=sig_reg[2])) + 
+    p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
       geom_violin() + geom_boxplot(width=0.1) + 
       labs(title=reg_struc[2], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[2])), x="Treatment Conditions", y="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.x = element_text(margin = margin(t = 10)))
     
-    p3 <- ggplot(data_comp, aes_string(x="Treatment", y=sig_reg[3])) + 
+    p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
       geom_violin() + geom_boxplot(width=0.1) + 
       labs(title=reg_struc[3], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[3])), y="", x="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
