@@ -163,7 +163,7 @@ for (j in c('positive', 'negative')) {
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     
     # Add total figure titles
-    patchwork <- p1 + p2 + p3
+    patchwork <- p1 + p2 + p3 + plot_annotation(subtitle = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'))
     plot_list[[i]] = patchwork
     full_plot <- patchwork + plot_annotation(
       title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
