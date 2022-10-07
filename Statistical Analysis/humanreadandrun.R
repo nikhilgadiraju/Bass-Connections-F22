@@ -149,12 +149,12 @@ for (j in c('positive', 'negative')) {
     
     p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + 
       geom_violin() + geom_boxplot(width=0.1) +
-      labs(title=reg_struc[1], subtitle=paste("P-value of ",toString(pvals_regs[1])," | Effect size of ",toString(eff_sizes[1])), y="Normalized Regional Proportion (%)", x="") + theme_bw() +
+      labs(title=reg_struc[1], subtitle=paste("P-value of ",toString(pvals_regs[1])," | Effect size of ",toString(eff_sizes[1])), y="", x="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.y = element_text(margin = margin(r = 10)))
     
     p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
       geom_violin() + geom_boxplot(width=0.1) + 
-      labs(title=reg_struc[2], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[2])), x="Treatment Conditions", y="") + theme_bw() +
+      labs(title=reg_struc[2], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[2])), x="", y="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.x = element_text(margin = margin(t = 10)))
     
     p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
@@ -163,17 +163,21 @@ for (j in c('positive', 'negative')) {
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     
     # Add total figure titles
-    patchwork <- p1 + p2 + p3 + plot_annotation(subtitle = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'))
-    plot_list[[i]] = patchwork
-    full_plot <- patchwork + plot_annotation(
-      title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
+    patchwork <- p1 + p2 + p3 + plot_annotation(
       subtitle = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'),
-      caption = 'DRAFT',
-      theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+      theme = theme(plot.subtitle = element_text(hjust = 0.5))
     )
+    plot_list[[i]] = patchwork
     
     # Saving Plots
     File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
     # ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
   }
 }
+
+comp_plot = plot_grid(plot_list[[1]], plot_list[[2]], plot_list[[3]], nrow=3, ncol=1)
+full_plot <- comp_plot + plot_annotation(
+  title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
+  caption = 'DRAFT',
+  theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+)
