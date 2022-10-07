@@ -131,6 +131,7 @@ dict[["st"]] = c("Sedentary", "Voluntary + Enforced")
 dict[["sw"]] = c("Sedentary", "Voluntary")
 dict[["tw"]] = c("Voluntary", "Voluntary + Enforced")
 
+# %% Plotting
 comp_groups = c('st','sw','tw')
 plot_list = list()
 
@@ -164,20 +165,27 @@ for (j in c('positive', 'negative')) {
     
     # Add total figure titles
     patchwork <- p1 + p2 + p3 + plot_annotation(
-      subtitle = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'),
-      theme = theme(plot.subtitle = element_text(hjust = 0.5))
+      title = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'),
+      theme = theme(plot.subtitle = element_text(hjust = 0.5), plot.title = element_text(hjust = 0.5, face = "bold"))
     )
     plot_list[[i]] = patchwork
-    
-    # Saving Plots
+    full_plot <- p1 + p2 + p3 + plot_annotation(
+      title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
+      subtitle = dict[[comparison]],
+      caption = 'DRAFT',
+      theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+    )
+    # Saving individual plots
     File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
-    # ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
+    ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
   }
+  comp_plot = plot_grid(plot_list[[1]], plot_list[[2]], plot_list[[3]], nrow=3, ncol=1)
+  composite_figure <- comp_plot + plot_annotation(
+    title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
+    caption = 'DRAFT',
+    theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  )
+  # Saving Plots
+  File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/comparison_",substr(j,1,3),'.png',sep="")
+  ggsave(File, plot = composite_figure, width=1322, height=900, dpi = 150, units='px', scale=2)
 }
-
-comp_plot = plot_grid(plot_list[[1]], plot_list[[2]], plot_list[[3]], nrow=3, ncol=1)
-full_plot <- comp_plot + plot_annotation(
-  title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
-  caption = 'DRAFT',
-  theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
-)
