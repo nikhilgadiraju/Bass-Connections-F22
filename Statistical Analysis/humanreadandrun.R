@@ -131,10 +131,13 @@ dict[["st"]] = c("Sedentary", "Voluntary + Enforced")
 dict[["sw"]] = c("Sedentary", "Voluntary")
 dict[["tw"]] = c("Voluntary", "Voluntary + Enforced")
 
+comp_groups = c('st','sw','tw')
+plot_list = list()
+
 # Read top regions CSVs
 for (j in c('positive', 'negative')) {
-  for (i in c('st','sw','tw')) {
-    comparison = i # 'st', 'sw', or 'tw'
+  for (i in 1:length(comp_groups)) {
+    comparison = comp_groups[i] # 'st', 'sw', or 'tw'
     top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/',comparison,'_regs/top_',substr(j,1,3),'_regions_',comparison,'.csv',sep=""))
     # data_comp = data[data$Treatment %in% dict[[i]],]
     
@@ -161,15 +164,16 @@ for (j in c('positive', 'negative')) {
     
     # Add total figure titles
     patchwork <- p1 + p2 + p3
+    plot_list[[i]] = patchwork
     full_plot <- patchwork + plot_annotation(
       title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
-      subtitle = paste(dict[[i]][1],'vs.',dict[[i]][2],'Exercise'),
+      subtitle = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'),
       caption = 'DRAFT',
       theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     )
     
     # Saving Plots
     File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
-    ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
+    # ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
   }
 }
