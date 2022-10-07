@@ -171,7 +171,7 @@ for (j in c('positive', 'negative')) {
     plot_list[[i]] = patchwork
     full_plot <- p1 + p2 + p3 + plot_annotation(
       title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
-      subtitle = dict[[comparison]],
+      subtitle = paste(dict[[i]][1],'vs.',dict[[i]][2],'Exercise'),
       caption = 'DRAFT',
       theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     )
