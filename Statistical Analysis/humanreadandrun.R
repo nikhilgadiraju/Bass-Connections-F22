@@ -160,18 +160,18 @@ for (j in c('positive', 'negative')) {
       tuk_list[[i]] = tuk[,c("group1", "group2", "p.adj", "y.position")]
     }
     
-    p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + stat_pvalue_manual(tuk_list[[1]], label = "p.adj") +
-      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.75, fill='red') + 
+    p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + stat_pvalue_manual(tuk_list[[1]], label = "p.adj", size = 3, tip.length = 0) +
+      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
       labs(title=reg_struc[1], subtitle=paste("P-value of ",toString(pvals_regs[1])," | Effect size of ",toString(eff_sizes[1])), x="", y="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.y = element_text(margin = margin(r = 10)))
     
-    p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
-      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.75, fill='red') + 
+    p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + stat_pvalue_manual(tuk_list[[2]], label = "p.adj", size = 3, tip.length = 0) +
+      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
       labs(title=reg_struc[2], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[2])), x="", y="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.x = element_text(margin = margin(t = 10)))
     
-    p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
-      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.75, fill='red') + 
+    p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + stat_pvalue_manual(tuk_list[[3]], label = "p.adj", size = 3, tip.length = 0) +
+      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
       labs(title=reg_struc[3], subtitle=paste("P-value of ",toString(pvals_regs[3])," | Effect size of ",toString(eff_sizes[3])), x="", y="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     
@@ -185,7 +185,7 @@ for (j in c('positive', 'negative')) {
       title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
       subtitle = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'),
       caption = 'DRAFT',
-      theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+      theme = theme(plot.tie = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     )
     # Saving individual plots
     File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
@@ -195,9 +195,9 @@ for (j in c('positive', 'negative')) {
   composite_figure <- comp_plot + plot_annotation(
     title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
     caption = 'DRAFT',
-    theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 14), plot.subtitle = element_text(hjust = 0.5))
   )
   # Saving Plots
   File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/comparison_",substr(j,1,3),'.png',sep="")
-  #ggsave(File, plot = composite_figure, width=1322, height=900, dpi = 150, units='px', scale=2)
+  ggsave(File, plot = composite_figure, width=1322, height=1322, dpi = 150, units='px', scale=2)
 }
