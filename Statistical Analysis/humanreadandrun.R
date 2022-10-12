@@ -13,6 +13,8 @@ library(reticulate)
 library(car)
 library(stringr)
 library(cowplot)
+library(ggpubr)
+library(rstatix)
 
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
@@ -149,9 +151,18 @@ for (j in c('positive', 'negative')) {
     pvals_regs = formatC(top_comp$P.value, format = "e", digits = 2)
     eff_sizes = formatC(top_comp$Effect.Size, format = "e", digits = 2)
     
-    p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + 
+    tuk_list = list()
+    for (i in 1:3) {
+      res.aov <- aov(get(sig_reg[i]) ~ Treatment, data = data)
+      tuk=tukey_hsd(res.aov)
+      data_temp <- data[,c("Treatment",sig_reg[i])] %>% setNames(c("treatment","region"))
+      tuk <- add_y_position(tuk, data=data_temp, formula=region ~ treatment)
+      tuk_list[[i]] = tuk[,c("group1", "group2", "p.adj", "y.position")]
+    }
+    
+    p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + stat_pvalue_manual(tuk_list[[1]], label = "p.adj") +
       geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.75, fill='red') + 
-      labs(title=reg_struc[1], subtitle=paste("P-value of ",toString(pvals_regs[1])," | Effect size of ",toString(eff_sizes[1])), y="", x="") + theme_bw() +
+      labs(title=reg_struc[1], subtitle=paste("P-value of ",toString(pvals_regs[1])," | Effect size of ",toString(eff_sizes[1])), x="", y="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.y = element_text(margin = margin(r = 10)))
     
     p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + 
@@ -161,7 +172,7 @@ for (j in c('positive', 'negative')) {
     
     p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + 
       geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.75, fill='red') + 
-      labs(title=reg_struc[3], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[3])), y="", x="") + theme_bw() +
+      labs(title=reg_struc[3], subtitle=paste("P-value of ",toString(pvals_regs[3])," | Effect size of ",toString(eff_sizes[3])), x="", y="") + theme_bw() +
       theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     
     # Add total figure titles
