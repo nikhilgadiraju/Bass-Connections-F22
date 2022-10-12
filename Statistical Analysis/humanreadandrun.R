@@ -152,12 +152,12 @@ for (j in c('positive', 'negative')) {
     eff_sizes = formatC(top_comp$Effect.Size, format = "e", digits = 2)
     
     tuk_list = list()
-    for (i in 1:3) {
-      res.aov <- aov(get(sig_reg[i]) ~ Treatment, data = data)
+    for (k in 1:3) {
+      res.aov <- aov(get(sig_reg[k]) ~ Treatment, data = data)
       tuk=tukey_hsd(res.aov)
-      data_temp <- data[,c("Treatment",sig_reg[i])] %>% setNames(c("treatment","region"))
+      data_temp <- data[,c("Treatment",sig_reg[k])] %>% setNames(c("treatment","region"))
       tuk <- add_y_position(tuk, data=data_temp, formula=region ~ treatment)
-      tuk_list[[i]] = tuk[,c("group1", "group2", "p.adj", "y.position")]
+      tuk_list[[k]] = tuk[,c("group1", "group2", "p.adj", "y.position")]
     }
     
     p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + stat_pvalue_manual(tuk_list[[1]], label = "p.adj", size = 3, tip.length = 0) +
@@ -185,12 +185,14 @@ for (j in c('positive', 'negative')) {
       title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
       subtitle = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'),
       caption = 'DRAFT',
-      theme = theme(plot.tie = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+      theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
     )
     # Saving individual plots
     File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
-    #ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
+    ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
   }
+  
+  
   comp_plot = plot_grid(plot_list[[1]], plot_list[[2]], plot_list[[3]], nrow=3, ncol=1)
   composite_figure <- comp_plot + plot_annotation(
     title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
