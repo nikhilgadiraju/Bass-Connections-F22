@@ -145,35 +145,28 @@ for (j in c('positive', 'negative')) {
     top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/',comparison,'_regs/top_',substr(j,1,3),'_regions_',comparison,'.csv',sep=""))
     # data_comp = data[data$Treatment %in% dict[[i]],]
     
-    # Basic Violin Plots
     sig_reg = top_comp$Abbreviation
     reg_struc = top_comp$Structure
     pvals_regs = formatC(top_comp$P.value, format = "e", digits = 2)
     eff_sizes = formatC(top_comp$Effect.Size, format = "e", digits = 2)
     
-    tuk_list = list()
+    graph_list = list()
     for (k in 1:3) {
       res.aov <- aov(get(sig_reg[k]) ~ Treatment, data = data)
       tuk=tukey_hsd(res.aov)
       data_temp <- data[,c("Treatment",sig_reg[k])] %>% setNames(c("treatment","region"))
       tuk <- add_y_position(tuk, data=data_temp, formula=region ~ treatment)
-      tuk_list[[k]] = tuk[,c("group1", "group2", "p.adj", "y.position")]
+      pbar_tab <- tuk[,c("group1", "group2", "p.adj.signif", "y.position")]
+
+      p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[k])) + stat_pvalue_manual(pbar_tab, label = "p.adj.signif", size = 3, tip.length = 0) +
+        geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
+        labs(title=reg_struc[k], subtitle=paste("P-value of ",toString(pvals_regs[k])," | Effect size of ",toString(eff_sizes[k])), x="", y="") + theme_bw() +
+        theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+      
+      graph_list[[k]] = p
     }
     
-    p1 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[1])) + stat_pvalue_manual(tuk_list[[1]], label = "p.adj", size = 3, tip.length = 0) +
-      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
-      labs(title=reg_struc[1], subtitle=paste("P-value of ",toString(pvals_regs[1])," | Effect size of ",toString(eff_sizes[1])), x="", y="") + theme_bw() +
-      theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.y = element_text(margin = margin(r = 10)))
-    
-    p2 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[2])) + stat_pvalue_manual(tuk_list[[2]], label = "p.adj", size = 3, tip.length = 0) +
-      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
-      labs(title=reg_struc[2], subtitle=paste("P-value of ",toString(pvals_regs[2])," | Effect size of ",toString(eff_sizes[2])), x="", y="") + theme_bw() +
-      theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5), axis.title.x = element_text(margin = margin(t = 10)))
-    
-    p3 <- ggplot(data, aes_string(x="Treatment", y=sig_reg[3])) + stat_pvalue_manual(tuk_list[[3]], label = "p.adj", size = 3, tip.length = 0) +
-      geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
-      labs(title=reg_struc[3], subtitle=paste("P-value of ",toString(pvals_regs[3])," | Effect size of ",toString(eff_sizes[3])), x="", y="") + theme_bw() +
-      theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+    p1 <- graph_list[[1]]; p2 <- graph_list[[2]]; p3 <- graph_list[[3]]
     
     # Add total figure titles
     patchwork <- p1 + p2 + p3 + plot_annotation(
