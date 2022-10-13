@@ -160,13 +160,15 @@ for (j in c('positive', 'negative')) {
 
       p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[k])) + stat_pvalue_manual(pbar_tab, label = "p.adj.signif", size = 3, tip.length = 0) +
         geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
-        labs(title=reg_struc[k], subtitle=paste("P-value of ",toString(pvals_regs[k])," | Effect size of ",toString(eff_sizes[k])), x="", y="") + theme_bw() +
+        labs(title=reg_struc[k], subtitle=paste("P-value of ",toString(pvals_regs[k])," | Effect size of ",toString(eff_sizes[k])), y="", x="") + theme_bw() +
         theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
       
       graph_list[[k]] = p
     }
     
-    p1 <- graph_list[[1]]; p2 <- graph_list[[2]]; p3 <- graph_list[[3]]
+    p1 <- graph_list[[1]] #+ theme(axis.title.y = element_text(margin = margin(r = 20)), axis.title.x = element_blank())
+    p2 <- graph_list[[2]] #+ theme(axis.title.x = element_text(margin = margin(t = 20)), axis.title.y = element_blank())
+    p3 <- graph_list[[3]] #+ theme(axis.title = element_blank())
     
     # Add total figure titles
     patchwork <- p1 + p2 + p3 + plot_annotation(
@@ -178,20 +180,26 @@ for (j in c('positive', 'negative')) {
       title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
       subtitle = paste(dict[[comparison]][1],'vs.',dict[[comparison]][2],'Exercise'),
       caption = 'DRAFT',
-      theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+      theme = theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5),
+                    plot.margin=unit(c(1,1,-0.5,0), 'cm'))
     )
+    gt <- patchwork::patchworkGrob(full_plot)
+    full_plot <- gridExtra::grid.arrange(gt, left = "Normalized Brain Proportion (%)", bottom = "Treatment")
+    
     # Saving individual plots
     File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
     ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
   }
   
-  
   comp_plot = plot_grid(plot_list[[1]], plot_list[[2]], plot_list[[3]], nrow=3, ncol=1)
   composite_figure <- comp_plot + plot_annotation(
     title = paste('Regions of Significance following Post-Hoc Analysis (',str_to_title(j),' Effect Size)',sep=""),
     caption = 'DRAFT',
-    theme = theme(plot.title = element_text(hjust = 0.5, size = 14), plot.subtitle = element_text(hjust = 0.5))
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 16), plot.subtitle = element_text(hjust = 0.5),
+                  plot.margin=unit(c(1,1,-0.5,0), 'cm'))
   )
+  gt <- patchwork::patchworkGrob(composite_figure)
+  composite_figure <- gridExtra::grid.arrange(gt, left = "Normalized Brain Proportion (%)", bottom = "Treatment")
   # Saving Plots
   File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/comparison_",substr(j,1,3),'.png',sep="")
   ggsave(File, plot = composite_figure, width=1322, height=1322, dpi = 150, units='px', scale=2)
