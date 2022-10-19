@@ -56,8 +56,10 @@ for (i in 1:(len-1))  {
   res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data)
   aov_table = get_anova_table(res.aov)
   
-  lm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
-  eff=eta_squared(lm, partial = FALSE)
+  mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
+  eff=eta_squared(mylm, partial = FALSE)
+  
+  anova(mylm)
   
   # Ho: data come from a normal distribution, H1: data do not come from a normal distribution
   # If p > 0.05, do NOT reject null, and thus data is normal
@@ -156,9 +158,9 @@ for (j in c('positive', 'negative')) {
       tuk=tukey_hsd(res.aov)
       data_temp <- data[,c("Treatment",sig_reg[k])] %>% setNames(c("treatment","region"))
       tuk <- add_y_position(tuk, data=data_temp, formula=region ~ treatment)
-      pbar_tab <- tuk[,c("group1", "group2", "p.adj.signif", "y.position")]
+      pbar_tab <- tuk[,c("group1", "group2", "p.adj", "y.position")]
 
-      p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[k])) + stat_pvalue_manual(pbar_tab, label = "p.adj.signif", size = 3, tip.length = 0) +
+      p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[k])) + stat_pvalue_manual(pbar_tab, label = "p.adj", size = 3, tip.length = 0, hide.ns = TRUE) +
         geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
         labs(title=reg_struc[k], subtitle=paste("P-value of ",toString(pvals_regs[k])," | Effect size of ",toString(eff_sizes[k])), y="", x="") + theme_bw() +
         theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
