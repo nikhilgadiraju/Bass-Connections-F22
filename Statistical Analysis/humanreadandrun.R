@@ -52,18 +52,14 @@ colnames(pvalsresults)=colnames_vec
 len = dim(data)[2]
 for (i in 1:(len-1))  {
   tempname=rownames(pvalsresults)[i]
-  
-  res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data)
-  aov_table = get_anova_table(res.aov)
-  
+
   mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
   eff=eta_squared(mylm, partial = FALSE)
-  
-  anova(mylm)
+  aov_table = anova(mylm)
   
   # Ho: data come from a normal distribution, H1: data do not come from a normal distribution
   # If p > 0.05, do NOT reject null, and thus data is normal
-  normality = shapiro.test(lm$residuals)
+  normality = shapiro.test(mylm$residuals)
   
   # Ho: variances are equal, H1: at least one variance is different
   # If p > 0.05, do NOT reject null, and thus data has equal variances (homogeneity == equality of variances)
@@ -72,7 +68,7 @@ for (i in 1:(len-1))  {
   means=by(data[,i+1],as.factor(data$Treatment), mean)
   sds=by(data[,i+1],as.factor(data$Treatment), sd)
   
-  val_list = c(aov_table$p, eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05 
+  val_list = c(aov_table$`Pr(>F)`, eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05 
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
