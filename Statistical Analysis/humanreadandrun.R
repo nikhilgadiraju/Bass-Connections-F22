@@ -68,7 +68,7 @@ for (i in 1:(len-1))  {
   means=by(data[,i+1],as.factor(data$Treatment), mean)
   sds=by(data[,i+1],as.factor(data$Treatment), sd)
   
-  val_list = c(aov_table$`Pr(>F)`, eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05 
+  val_list = c(aov_table$`Pr(>F)`[1], eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$'F value'[1], normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05 
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
