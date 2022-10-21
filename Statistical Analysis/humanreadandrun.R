@@ -44,21 +44,22 @@ for (g in 1:length(fa_tab[,'N-number'])) {
   fa_tab[,'N-number'][g] = metadata$Treatment[treat_row]
 }
 colnames(fa_tab)[1] = 'Treatment'
+data = na.omit(fa_tab)
 
-# Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
-data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
-
-# Replace appended "X" to region names due to read.csv wrapper
-old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
-new_colnames = sub('.','',old_colnames)
-colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
-
-data=data[  , -c(1,2,3)] 
-dim(data)
-data=na.omit(data) 
-
-# Convert voxel counts to proportions of total brain volume
-data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]] 
+# # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
+# data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
+# 
+# # Replace appended "X" to region names due to read.csv wrapper
+# old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
+# new_colnames = sub('.','',old_colnames)
+# colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
+# 
+# data=data[  , -c(1,2,3)]
+# dim(data)
+# data=na.omit(data)
+# 
+# # Convert voxel counts to proportions of total brain volume
+# data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]]
 
 # Create blank matrix to represent p values (column) for each brain regions (rows)
 colnames_vec = c("FDR corrected Pvalue", "Effect Size Eta^2", 
