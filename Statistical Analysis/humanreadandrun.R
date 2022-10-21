@@ -16,10 +16,39 @@ library(cowplot)
 library(ggpubr)
 library(rstatix)
 
+# FA Analysis
+path_fa="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
+file_list=list.files(path_fa)
+
+path_index="/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/Absolute Files/index.csv"
+index=read.csv(path_index)[,c('index2','Abbreviation')]
+
+path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
+metadata = read.csv(path_metadata)
+
+temp = read.delim(paste0(path_fa,file_list[1]))
+len=length(temp$fa_mean)
+fa_tab = matrix(NA,length(file_list),len)
+
+for (i in 1:length(file_list)) {
+  temp=read.delim(paste0(path_fa,file_list[i]))
+  fa_tab[i,2:len]=temp$fa_mean[2:len]
+  fa_tab[i,1]=substr(file_list[i], 1, 6)
+}
+
+colnames(fa_tab) <- c('N-number',head(index[,'Abbreviation'], -1))
+fa_tab <- fa_tab[which(metadata$N.number %in% fa_tab[,'N-number']),]
+
+for (g in 1:length(fa_tab[,'N-number'])) {
+  treat_row = which(metadata$N.number == metadata$N.number[g])
+  fa_tab[,'N-number'][g] = metadata$Treatment[treat_row]
+}
+colnames(fa_tab)[1] = 'Treatment'
+
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
 
-  # Replace appended "X" to region names due to read.csv wrapper
+# Replace appended "X" to region names due to read.csv wrapper
 old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
 new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
@@ -202,25 +231,3 @@ for (j in c('positive', 'negative')) {
   File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/comparison_",substr(j,1,3),'.png',sep="")
   ggsave(File, plot = composite_figure, width=1322, height=1322, dpi = 150, units='px', scale=2)
 }
-
-# FA Analysis
-path_index="/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/Absolute Files/index.csv"
-index=read.csv(path_index)[,c('index2','Abbreviation')]
-
-path_fa="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
-file_list=list.files(path_fa)
-
-path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
-metadata = read.csv(path_metadata)
-
-temp = read.delim(paste0(path_vol,file_list[1]))
-len=length(temp$fa_mean)
-fa_tab = matrix(NA,length(file_list),len)
-
-for (i in 1:length(file_list)) {
-  temp=read.delim(paste0(path_vol,file_list[i]))
-  fa_tab[i,2:len]=temp$fa_mean[2:len]
-  fa_tab[i,1]=substr(file_list[i], 1, 6)
-}
-colnames(fa_tab) <- c('N-number',head(index[,'Abbreviation'], -1))
-fa_tab <- fa_tab[which(metadata$N.number %in% fa_tab[,'N-number']),]
