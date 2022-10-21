@@ -287,8 +287,8 @@ columnsarr = pd.MultiIndex.from_tuples([('Filename', ''), ('ID', '')] + list(col
 
 # Adding treatment column
 id_treatment = id_updated_df
-treatment_dict = id_treatment.set_index('ID')["Treatment"].to_dict()
-id_vv = pd.Series(out_df_vv.loc[:,"ID"])
+treatment_dict = id_treatment.set_index('Modified ID')["Treatment"].to_dict()
+id_vv = pd.Series(out_df_vv.loc[:,"Modified ID"])
 
 def treatment_match(input_id):
     if str(input_id) in list(treatment_dict.keys()):

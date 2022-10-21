@@ -30,11 +30,12 @@ treatment_data = pd.read_csv("/Volumes/GoogleDrive/My Drive/Education School/Duk
 
 # %% DATA PROCESSING
 
-id_treatment_df = treatment_data[["Animal", "Treatment"]] # Isolate Animal ID and Treatment columns
+id_treatment_df = treatment_data[["Animal", "Treatment", "DWI"]] # Isolate Animal ID and Treatment columns
 filtered_df = id_treatment_df[id_treatment_df["Treatment"].isin(['sedentary','wheel_only','treadmill'])] # Filter to include animal IDs that have the 3 specified treatments
 
 id_updated = list(map(lambda x: normFileNames(x), filtered_df['Animal'])) # Create list of updated IDs
-id_updated_df = pd.DataFrame({'ID': id_updated, 'Treatment': list(filtered_df.iloc[:,1])}) # Create new dataframe with column 1 = updated IDs, and column 2 = Treatment
+id_updated_df = pd.DataFrame({'Original ID': filtered_df['Animal'], 'Modified ID': id_updated, 'N-number': filtered_df["DWI"], 'Treatment': list(filtered_df.iloc[:,1])}) # Create new dataframe with column 1 = updated IDs, and column 2 = Treatment
+
 
 # Save dataframe as CSV
 os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files")

@@ -1,7 +1,7 @@
 # Library Imports
 library(data.table)
 library(readxl)
-library(rstatix)
+library(rstatix)a
 library(jmv)
 library(ggplot2)
 library(patchwork)
@@ -202,3 +202,25 @@ for (j in c('positive', 'negative')) {
   File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/comparison_",substr(j,1,3),'.png',sep="")
   ggsave(File, plot = composite_figure, width=1322, height=1322, dpi = 150, units='px', scale=2)
 }
+
+# FA Analysis
+path_index="/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/Absolute Files/index.csv"
+index=read.csv(path_index)[,c('index2','Abbreviation')]
+
+path_fa="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
+file_list=list.files(path_fa)
+
+path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
+metadata = read.csv(path_metadata)
+
+temp = read.delim(paste0(path_vol,file_list[1]))
+len=length(temp$fa_mean)
+fa_tab = matrix(NA,length(file_list),len)
+
+for (i in 1:length(file_list)) {
+  temp=read.delim(paste0(path_vol,file_list[i]))
+  fa_tab[i,2:len]=temp$fa_mean[2:len]
+  fa_tab[i,1]=substr(file_list[i], 1, 6)
+}
+colnames(fa_tab) <- c('N-number',head(index[,'Abbreviation'], -1))
+fa_tab <- fa_tab[which(metadata$N.number %in% fa_tab[,'N-number']),]
