@@ -84,8 +84,8 @@ len = dim(data)[2]
 for (i in 1:(len-1))  {
   tempname=rownames(pvalsresults)[i]
 
-  mylm <- lm(as.numeric(get(tempname)) ~ as.factor(Treatment), data=data) 
-  eff=eta_squared(mylm)
+  mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
+  eff=effectsize::eta_squared(mylm, partial = F)
   aov_table = anova(mylm)
   
   # Ho: data come from a normal distribution, H1: data do not come from a normal distribution
@@ -121,8 +121,8 @@ pvalsresultsadjusted[,1] = p.adjust(pvalsresultsadjusted[,1], "fdr") #Benjamini 
 # Filter 'pvalsresultesadjusted' table to display brain regions that have significant p values (p<0.05)
 #sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,] 
 sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05 & 
-                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 &
-                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,]
+                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 & # For Levene's Test
+                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,] # For Shapiro-Wilk Test
 
 posthoc = matrix(NA,dim(sig)[1],7)
 posthoc[,1]=sig[,1]
@@ -132,8 +132,8 @@ for (i in 1:dim(sig)[1]) {
   tempname=rownames(sig)[i]
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
   tuk=tukey_hsd(res.aov)
-  treatment = c('sedentary', 'sedentary', 'wheel_only')
   control = c('wheel_only', 'treadmill', 'treadmill')
+  treatment = c('sedentary', 'sedentary', 'wheel_only')
   for (j in 1:length(control)){
     hedges_out = hedges_g(get(tempname) ~ factor(Treatment, levels=c(control[j], treatment[j])), data=data)
     posthoc[i,j+4]=hedges_out$Hedges_g #Go through columns 5, 6, 7
@@ -167,7 +167,7 @@ dict[["tw"]] = c("Voluntary", "Voluntary + Enforced")
 comp_groups = c('st','sw','tw')
 plot_list = list()
 
-# Read top regions CSVs
+# Main Plotting loop
 for (j in c('positive', 'negative')) {
   for (i in 1:length(comp_groups)) {
     comparison = comp_groups[i] # 'st', 'sw', or 'tw'
@@ -178,7 +178,7 @@ for (j in c('positive', 'negative')) {
     reg_struc = top_comp$Structure
     pvals_regs = formatC(top_comp$P.value, format = "e", digits = 2)
     eff_sizes = formatC(top_comp$Effect.Size, format = "e", digits = 2)
-    
+
     graph_list = list()
     for (k in 1:3) {
       res.aov <- aov(get(sig_reg[k]) ~ Treatment, data = data)
