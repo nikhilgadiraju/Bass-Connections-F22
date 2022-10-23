@@ -9,3 +9,48 @@ mcp_L,Middle Cerebellar Peduncle (L),3.47e-05,-2.60007303314341
 DTg_R,Dorsal Tegmentum (R),6.01e-06,-2.59387644042889
 SN_R,Substantia Nigra (R),4.15e-05,-2.54309301638933
 DTg_L,Dorsal Tegmentum (L),0.000255,-2.33406465785998
+PAG_L,Periaquaductal Grey (L),0.000776,-2.12054816927906
+Pn_L,Pontine Nucleus (L),0.000383,-2.04250074448469
+Sthal_L,Subthalamic Nucleus (L),0.000265,-2.02191474041514
+Pn_R,Pontine Nucleus (R),0.000749,-2.00940974918434
+FrA_L,Frontal Association Cortex (L),9.16e-05,-1.98407225491675
+GP_R,Globus Pallidus (R),9.16e-07,-1.95540098768106
+IC_R,Inferior Colliculus (R),0.019,-1.81841917225259
+SN_L,Substantia Nigra (L),0.00605,-1.79762381898996
+Thal_R_L,Thalamus Rest (L),0.00274,-1.74612667171435
+PAG_R,Periaquaductal Grey (R),0.0335,-1.74042627299467
+Pr5_L,Trigeminal Sensory Nucleus (L),0.00834,-1.72632221936792
+Su5_R,Pedunculotegmental Medial Paralemniscial and Supratrigemnial Nuclei (R),0.000282,-1.70923298638069
+Raph_L,Raphe Nucleus (L),0.00062,-1.69497497249938
+MRN_R,Midbrain Reticular Nucleus (R),0.0124,-1.66289360644587
+RMC_R,Red Nucleus Magnocellular (R),0.044,-1.64354131388283
+GP_L,Globus Pallidus (L),0.00125,-1.62743305932473
+Hyp_L,Hypothalamus (L),0.00346,-1.61859267932234
+ZI_R,Zona Incerta (R),0.00209,-1.60142508667937
+ic_R,Internal Capsule (R),0.00277,-1.59250936743791
+KF_R,Parabrachial Medial Nucleus and Koelliker Fuse Nucleus (R),0.00166,-1.5709283074411
+BNst_L,Bed Nucleus of the Stria Terminalis (L),0.00853,-1.55400470279019
+scp_R,Superior Cerebellar Peduncle (R),5.76e-05,-1.50745781626065
+Raph_R,Raphe Nucleus (R),0.00971,-1.4653110434583
+AThal_R,Anterior Thalamic Nuclei (R),0.000123,-1.4211489137526
+FasMed_R,Fastigial Medial Nucleus of Cerebellum (R),0.00248,-1.41033799878057
+PVG_L,PVG of Hypothalamus (L),0.0438,-1.38253064180947
+SC_L,Superior Colliculus (L),0.000113,-1.34529764071457
+PVG_R,PVG of Hypothalamus (R),0.0359,-1.34089750020887
+Sthal_R,Subthalamic Nucleus (R),0.00154,-1.33699532856796
+Tg_R,Tegmental Nucleus (R),0.0386,-1.32851310976349
+n8_R,Vestibulocochlear Nerve (R),0.00618,-1.2944900543227
+SC_R,Superior Colliculus (R),0.000997,-1.27235039130217
+Ve_R,Vestibular Nuclei (R),0.024,-1.23879074970506
+Vll_R,Ventral Lateral Lemniscus Nucleus (R),0.0332,-1.22182465397589
+CPu_R,Striatum (R),0.00708,-1.19686224008951
+Pr5_R,Trigeminal Sensory Nucleus (R),0.0197,-1.17312522917815
+RTg_R,Reticulotegmental Nucleus of Pons (R),0.0232,-1.16018280942198
+5N_R,Trigeminal Motor Nucleus (R),0.00145,-1.12048739900675
+Su5_L,Pedunculotegmental Medial Paralemniscial and Supratrigemnial Nuclei (L),0.0141,-1.10666458390395
+cc_R,Corpus Callosum (R),0.00439,-1.03438679034445
+CSF_R,Cerebrospinal fluid (R),0.00323,-1.02577235609459
+BNst_R,Bed Nucleus of the Stria Terminalis (R),0.0143,-1.02164761596049
+Den_R,Dentate (Lateral) Nucleus of Cerebellum (R),0.00578,-1.0124426938121
+Int_R,Interposed Nucleus of Cerebellum (R),0.0192,-0.951387830312822
+A24a_R,Cingulate Cortex Area 24a (R),0.00526,-0.632942701387839

@@ -9,3 +9,25 @@ DLEnt_L,Dorsolateral Entorhinal Cortex (L),0.00125,1.68632960632229
 V2ML_L,Secondary Visual Cortex Mediolateral Area (L),0.000252,1.62160924279678
 Ins_R,Insular Cortex (R),0.00875,1.61600275485718
 S1HL_R,Primary Somatosensory Cortex Hindlimb Region (R),5.06e-05,1.61489388229038
+DLEnt_R,Dorsolateral Entorhinal Cortex (R),0.00688,1.55948432592896
+S1Tr_L,Primary Somatosensory Cortex Trunk Region (L),0.00623,1.48605752182843
+V2ML_R,Secondary Visual Cortex Mediolateral Area (R),0.002,1.44545635178888
+PRh_L,Perirhinal Cortex (L),0.000702,1.42780484843305
+V1M_R,Primary Visual Cortex Monocular Area (R),0.000145,1.40237650812219
+TeA_L,Temporal Association Cortex (L),0.0234,1.32908915725588
+Ect_L,Ectorhinal Cortex (L),0.0441,1.32534283514122
+S1Sh_L,Primary Somatosensory Cortex Shoulder Region (L),0.0192,1.32239824468889
+S1FL_L,Primary Somatosensory CortexForelimb Region (L),0.0152,1.31456566038331
+Sp5_L,Spinal Trigeminal Nucleus (L),0.0156,1.18025590581774
+PtPR_L,Parietal Cortex Posterior Area Rostral Part (L),0.0082,1.1580360658151
+S1_R,Primary Somatosensory Cortex (R),0.00575,1.14179882100602
+V2MM_R,Secondary Visual Cortex Mediomedial Area (R),0.0172,1.08207359936643
+V2L_R,Secondary Visual CortexLateral Area (R),0.00753,1.02897277579373
+V1B_R,Primary Visual Cortex Binocular Area (R),0.0117,1.00505754443146
+DIEnt_L,Dorsal Intermediate Entorhinal Cortex (L),0.0137,0.983890288450371
+MPtA_L,Medial Parietal Association Cortex (L),0.00537,0.963102758616111
+V2MM_L,Secondary Visual Cortex Mediomedial Area (L),0.00132,0.672482067173327
+PaS_R,Parasubiculum (R),0.000816,0.659403510034084
+Ect_R,Ectorhinal Cortex (R),0.00413,0.509921321645026
+Post_L,Postsubiculum (L),0.0474,0.324823008648592
+PRh_R,Perirhinal Cortex (R),0.00794,0.288798638077555

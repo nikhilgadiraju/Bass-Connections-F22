@@ -1,0 +1,334 @@
+Structure,Abbreviation
+Cingulate Cortex Area 24a (L),A24a_L
+Cingulate Cortex Area 24a prime (L),A24aPrime_L
+Cingulate Cortex Area 24b (L),A24b_L
+Cingulate Cortex Area 24b prime (L),A24bPrime_L
+Cingulate Cortex Area 29a (L),A29a_L
+Cingulate Cortex Area 29b (L),A29b_L
+Cingulate Cortex Area 29c (L),A29c_L
+Cingulate Cortex Area 30 (L),A30_L
+Cingulate Cortex Area 32 (L),A32_L
+Primary Auditory Cortex (L),Au1_L
+Secondary Auditory Cortex Dorsal Part (L),AuD_L
+Secondary Auditory Cortex Ventral Part (L),AuV_L
+Dorsolateral Orbital Cortex (L),DLO_L
+Frontal Cortex Area 3 (L),Fr3_L
+Frontal Association Cortex (L),FrA_L
+Insular Cortex (L),Ins_L
+Lateral Orbital Cortex (L),LO_L
+Lateral Parietal Association Cortex (L),LPtA_L
+Primary Motor Cortex (L),M1_L
+Secondary Motor Cortex (L),M2_L
+Medial Orbital Cortex (L),MO_L
+Medial Parietal Association Cortex (L),MPtA_L
+Parietal Cortex Posterior Area Rostral Part (L),PtPR_L
+Primary Somatosensory Cortex (L),S1_L
+Primary Somatosensory Cortex Barrel Field (L),S1BF_L
+Primary Somatosensory Cortex Dysgranular Zone (L),S1DZ_L
+Primary Somatosensory CortexForelimb Region (L),S1FL_L
+Primary Somatosensory Cortex Hindlimb Region (L),S1HL_L
+Primary Somatosensory Cortex Jaw Region (L),S1J_L
+Primary Somatosensory Cortex Shoulder Region (L),S1Sh_L
+Primary Somatosensory Cortex Trunk Region (L),S1Tr_L
+Primary Somatosensory Cortex Upper Lip Region (L),S1ULp_L
+Secondary Somatosensory Cortex (L),S2_L
+Temporal Association Cortex (L),TeA_L
+Primary Visual Cortex (L),V1_L
+Primary Visual Cortex Binocular Area (L),V1B_L
+Primary Visual Cortex Monocular Area (L),V1M_L
+Secondary Visual CortexLateral Area (L),V2L_L
+Secondary Visual Cortex Mediolateral Area (L),V2ML_L
+Secondary Visual Cortex Mediomedial Area (L),V2MM_L
+Ventral Orbital Cortex (L),VO_L
+Caudomedial Entorhinal Cortex (L),CEnt_L
+Dorsal Intermediate Entorhinal Cortex (L),DIEnt_L
+Dorsolateral Entorhinal Cortex (L),DLEnt_L
+Medial Entorhinal Cortex (L),MEnt_L
+Ventral Intermediate Entorhinal Cortex (L),VIEnt_L
+Claustrum (L),Cl_L
+Dorsal Claustrum (L),DCl_L
+Posterolateral Cortical Amygdaloid Area (L),PLCo_L
+Ventral Claustrum (L),VCl_L
+Hippocampus (L),Hc_L
+Dorsal Tenia Tecta (L),DTT_L
+Ectorhinal Cortex (L),Ect_L
+Parasubiculum (L),PaS_L
+Perirhinal Cortex (L),PRh_L
+Presubiculum (L),PrS_L
+Piriform Cortex (L),Pir_L
+Amygdalopiriform Transition Area (L),APir_L
+Hypothalamus (L),Hyp_L
+Preoptic Telencephalon (L),Preopt_L
+Subthalamic Nucleus (L),Sthal_L
+Septum (L),SPT_L
+Globus Pallidus (L),GP_L
+Striatum (L),CPu_L
+Amygdala (L),Amy_L
+Accumbens (L),Acb_L
+Bed Nucleus of the Stria Terminalis (L),BNst_L
+Ventral Pallidum (L),Vpal_L
+Periaquaductal Grey (L),PAG_L
+Anterior Pretectal Nucleus (L),APT_L
+Ventral Tegmental Area (L),VTA_L
+Thalamus Rest (L),Thal_R_L
+Ventral Thalamic Nuclei (L),VT_L
+Latero Dorsal Nucleus of Thalamus (L),LDNT_L
+Medial Geniculate Nucleus (L),MGN_L
+Lateral Geniculate Nucleus (L),LGN_L
+Zona Incerta (L),ZI_L
+Reticular Nucleus of Thalamus (L),RTN_L
+Subbrachial Nucleus and Peripeduncular Nucleus (L),Sub_PP_L
+Deep Mesencephalic Nuclei (L),DpMe_L
+Superior Colliculus (L),SC_L
+Inferior Colliculus (L),IC_L
+Substantia Nigra (L),SN_L
+Red Nucleus Parvicellular (L),RPC_L
+Midbrain Reticular Nucleus (L),MRN_L
+Rostral Linear Nucleus (L),RI_L
+Cuneiform Nucleus (L),Cn_L
+Precuneiform Nucleus (L),PrCn_L
+Brain Stem Rest (L),BS_R_L
+Interpeduncular Nucleus (L),Iped_L
+Cerebellar Cortex (L),Cb_1_10_L
+Dentate (Lateral) Nucleus of Cerebellum (L),Den_L
+Interposed Nucleus of Cerebellum (L),Int_L
+Fastigial Medial Dorsolateral Nucleus of Cerebellum (L),FasDL_L
+Fastigial Medial Nucleus of Cerebellum (L),FasMed_L
+Ventral Lateral Lemniscus Nucleus (L),Vll_L
+Parabrachial Nucleus (L),ParB_L
+Parabrachial Medial Nucleus and Koelliker Fuse Nucleus (L),KF_L
+Parvicellular Reticular Nucleus and Principal Sensory Trigeminal Nucleus (L),PCRt_L
+Central Gray (L),CG_L
+Pedunculotegmental Medial Paralemniscial and Supratrigemnial Nuclei (L),Su5_L
+Motor Root of Trigeminal Nerve (L),m5_L
+Trigeminal Motor Nucleus (L),5N_L
+Pontine Reticular NucleusOral (L),PnO_L
+Raphe Nucleus (L),Raph_L
+Trigeminal Sensory Nucleus (L),Pr5_L
+Dorsal Tegmentum (L),DTg_L
+Tegmental Nucleus (L),Tg_L
+Cochlear Nucleus (L),CoN_L
+Pontine Nucleus (L),Pn_L
+Reticulotegmental Nucleus of Pons (L),RTg_L
+Olivary Complex (L),Oliv_L
+Pontine Reticular NucleusCaudal (L),PnC_L
+Spinal Trigeminal Nucleus (L),Sp5_L
+Vestibular Nuclei (L),Ve_L
+Gigantocellular Reticular Nucleus (L),Gi_L
+Cuneate Nucleus (L),Cu_L
+Anterior Commisure (L),ac_L
+Optic Tracts (L),ot_L
+Fimbria (L),fi_L
+Corpus Callosum (L),cc_L
+Fornix (L),fx_L
+Stria Terminalis (L),st_L
+Cingulum (L),cg_L
+Lateral Olfactory Tract (L),lo_L
+Ventral Hippocampal Commissure (L),vhc_L
+Internal Capsule (L),ic_L
+Fasciculus Retroflexus (L),fr_L
+Stria Medularis (L),sm_L
+Mamillothalamic Tract (L),mt_L
+Posterior Commissure (L),pc_L
+Brachium of Superior Colliculus (L),bsc_L
+Cerebral Peduncle (L),cp_L
+Lateral Lemniscus (L),ll_L
+Spinal Trigeminal Nerve (L),sp5_L
+Pyramidal Tract (L),py_L
+Vestibulocochlear Nerve (L),n8_L
+Facial Nerve (L),n7_L
+Longitudinal Fasciculus of Pons (L),lfp_L
+Medial Longitudinal Fasciculus and Tectospinal Tract (L),mlf_ts_L
+Spinocerebellar Tract (L),sc_L
+Medial Lemniscus (L),ml_L
+Ventral Spinocerebellar Tract (L),vsc_L
+Middle Cerebellar Peduncle (L),mcp_L
+Superior Cerebellar Peduncle (L),scp_L
+Inferior Cerebellar Peduncle (L),icp_oc_tz_L
+Cerebellar White Matter (L),cbw_L
+Lateral Ventricle (L),LV_L
+Cingulate Cortex Area 25 (L),A25_L
+Dorsal Acustic Stria (L),das_L
+Postsubiculum (L),Post_L
+Ventricular System 4thVentricle (L),4V_L
+Microcellular Tegmental Nucleus (L),MiTg_L
+Pretectal Nucleus (L),PT_L
+Latero Dorsal Thalamic Nucleus Ventro Lateral (L),LDVL_L
+Latero Posterior Nuclei of Thalamus (L),LP_L
+Anterior Thalamic Nuclei (L),Athal_L
+Red Nucleus Magnocellular (L),RMC_L
+Pararubral Nucleus (L),PaR_L
+Retro Rubral Field (L),RR_L
+Cerebrospinal fluid (L),CSF_L
+IntermediateReticularNucleus (L),IRN_L
+PosteriorDorsal ParaventricularMedialParvicellular Posterior LateralHypothalamus (L),PHD_PaMP_Post_and_LatHy_L
+Prerubral Forel (L),PR_p3Tg_L_L
+PVG of Hypothalamus (L),PVG_L
+Basal Lateral Amygdala (L),BLA_L
+Cingulate Cortex Area 24a (R),A24a_R
+Cingulate Cortex Area 24a prime (R),A24aPrime_R
+Cingulate Cortex Area 24b (R),A24b_R
+Cingulate Cortex Area 24b prime (R),A24bPrime_R
+Cingulate Cortex Area 29a (R),A29a_R
+Cingulate Cortex Area 29b (R),A29b_R
+Cingulate Cortex Area 29c (R),A29c_R
+Cingulate Cortex Area 30 (R),A30_R
+Cingulate Cortex Area 32 (R),A32_R
+Primary Auditory Cortex (R),Au1_R
+Secondary Auditory Cortex Dorsal Part (R),AuD_R
+Secondary Auditory Cortex Ventral Part (R),AuV_R
+Dorsolateral Orbital Cortex (R),DLO_R
+Frontal Cortex Area 3 (R),Fr3_R
+Frontal Association Cortex (R),FrA_R
+Insular Cortex (R),Ins_R
+Lateral Orbital Cortex (R),LO_R
+Lateral Parietal Association Cortex (R),LPtA_R
+Primary Motor Cortex (R),M1_R
+Secondary Motor Cortex (R),M2_R
+Medial Orbital Cortex (R),MO_R
+Medial Parietal Association Cortex (R),MPtA_R
+Parietal Cortex Posterior Area Rostral Part (R),PtPR_R
+Primary Somatosensory Cortex (R),S1_R
+Primary Somatosensory Cortex Barrel Field (R),S1BF_R
+Primary Somatosensory Cortex Dysgranular Zone (R),S1DZ_R
+Primary Somatosensory CortexForelimb Region (R),S1FL_R
+Primary Somatosensory Cortex Hindlimb Region (R),S1HL_R
+Primary Somatosensory Cortex Jaw Region (R),S1J_R
+Primary Somatosensory Cortex Shoulder Region (R),S1Sh_R
+Primary Somatosensory Cortex Trunk Region (R),S1Tr_R
+Primary Somatosensory Cortex Upper Lip Region (R),S1ULp_R
+Secondary Somatosensory Cortex (R),S2_R
+Temporal Association Cortex (R),TeA_R
+Primary Visual Cortex (R),V1_R
+Primary Visual Cortex Binocular Area (R),V1B_R
+Primary Visual Cortex Monocular Area (R),V1M_R
+Secondary Visual CortexLateral Area (R),V2L_R
+Secondary Visual Cortex Mediolateral Area (R),V2ML_R
+Secondary Visual Cortex Mediomedial Area (R),V2MM_R
+Ventral Orbital Cortex (R),VO_R
+Caudomedial Entorhinal Cortex (R),CEnt_R
+Dorsal Intermediate Entorhinal Cortex (R),DIEnt_R
+Dorsolateral Entorhinal Cortex (R),DLEnt_R
+Medial Entorhinal Cortex (R),MEnt_R
+Ventral Intermediate Entorhinal Cortex (R),VIEnt_R
+Claustrum (R),Cl_R
+Dorsal Claustrum (R),DCl_R
+Posterolateral Cortical Amygdaloid Area (R),PLCo_R
+Ventral Claustrum (R),VCl_R
+Hippocampus (R),Hc_R
+Dorsal Tenia Tecta (R),DTT_R
+Ectorhinal Cortex (R),Ect_R
+Parasubiculum (R),PaS_R
+Perirhinal Cortex (R),PRh_R
+Presubiculum (R),PrS_R
+Piriform Cortex (R),Pir_R
+Amygdalopiriform Transition Area (R),APir_R
+Hypothalamus (R),Hyp_R
+Preoptic Telencephalon (R),Pre_Tel_R
+Subthalamic Nucleus (R),Sthal_R
+Septum (R),SPT_R
+Globus Pallidus (R),GP_R
+Striatum (R),CPu_R
+Amygdala (R),Amy_R
+Accumbens (R),Acb_R
+Bed Nucleus of the Stria Terminalis (R),BNst_R
+Ventral Pallidum (R),Vpal_R
+Periaquaductal Grey (R),PAG_R
+Anterior Pretectal Nucleus (R),APT_R
+Ventral Tegmental Area (R),VTA_R
+Thalamus Rest (R),Thal_R_R
+Ventral Thalamic Nuclei (R),VT_R
+Latero Dorsal Nucleus of Thalamus (R),LDNT_R
+Medial Geniculate Nucleus (R),MGN_R
+Lateral Geniculate Nucleus (R),LGN_R
+Zona Incerta (R),ZI_R
+Reticular Nucleus of Thalamus (R),RTN_R
+Subbrachial Nucleus and Peripeduncular Nucleus (R),Sub_PP_R
+Deep Mesencephalic Nuclei (R),DpMe_R
+Superior Colliculus (R),SC_R
+Inferior Colliculus (R),IC_R
+Substantia Nigra (R),SN_R
+Red Nucleus Parvicellular (R),RPC_R
+Midbrain Reticular Nucleus (R),MRN_R
+Rostral Linear Nucleus (R),RI_R
+Cuneiform Nucleus (R),Cn_R
+Precuneiform Nucleus (R),PrCn_R
+Brain Stem Rest (R),BS_R_R
+Interpeduncular Nucleus (R),Iped_R
+Cerebellar Cortex (R),Cb_1_10_R
+Dentate (Lateral) Nucleus of Cerebellum (R),Den_R
+Interposed Nucleus of Cerebellum (R),Int_R
+Fastigial Medial Dorsolateral Nucleus of Cerebellum (R),FasDL_R
+Fastigial Medial Nucleus of Cerebellum (R),FasMed_R
+Ventral Lateral Lemniscus Nucleus (R),Vll_R
+Parabrachial Nucleus (R),ParB_R
+Parabrachial Medial Nucleus and Koelliker Fuse Nucleus (R),KF_R
+Parvicellular Reticular Nucleus and Principal Sensory Trigeminal Nucleus (R),PCRt_R
+Central Gray (R),CG_R
+Pedunculotegmental Medial Paralemniscial and Supratrigemnial Nuclei (R),Su5_R
+Motor Root of Trigeminal Nerve (R),m5_R
+Trigeminal Motor Nucleus (R),5N_R
+Pontine Reticular Nucleus (R),PnC_R
+Raphe Nucleus (R),Raph_R
+Trigeminal Sensory Nucleus (R),Pr5_R
+Dorsal Tegmentum (R),DTg_R
+Tegmental Nucleus (R),Tg_R
+Cochlear Nucleus (R),CoN_R
+Pontine Nucleus (R),Pn_R
+Reticulotegmental Nucleus of Pons (R),RTg_R
+Olivary Complex (R),Oliv_R
+Pontine Reticular Nucleus (R),PnRt_R
+Spinal Trigeminal Nucleus (R),Sp5_R
+Vestibular Nuclei (R),Ve_R
+Gigantocellular Reticular Nucleus (R),Gi_R
+Cuneate Nucleus (R),Cu_R
+Anterior Commisure (R),ac_R
+Optic Tracts (R),ot_R
+Fimbria (R),fi_R
+Corpus Callosum (R),cc_R
+Fornix (R),fx_R
+Stria Terminalis (R),st_R
+Cingulum (R),cg_R
+Lateral Olfactory Tract (R),lo_R
+Ventral Hippocampal Commissure (R),vhc_R
+Internal Capsule (R),ic_R
+Fasciculus Retroflexus (R),fr_R
+Stria Medularis (R),sm_R
+Mamillothalamic Tract (R),mt_R
+Posterior Commissure (R),pc_R
+Brachium of Superior Colliculus (R),bsc_R
+Cerebral Peduncle (R),cp_R
+Lateral Lemniscus (R),ll_R
+Spinal Trigeminal Nerve (R),sp5_R
+Pyramidal Tract (R),py_R
+Vestibulocochlear Nerve (R),n8_R
+Facial Nerve (R),n7_R
+Longitudinal Fasciculus of Pons (R),lfp_R
+Medial Longitudinal Fasciculus and Tectospinal Tract (R),mlf_ts_R
+Spinocerebellar Tract (R),sc_R
+Medial Lemniscus (R),ml_R
+Ventral Spinocerebellar Tract (R),vsc_R
+Middle Cerebellar Peduncle (R),mcp_R
+Superior Cerebellar Peduncle (R),scp_R
+Inferior Cerebellar Peduncle (R),icp_oc_tz_R
+Cerebellar White Matter (R),cbw_R
+Lateral Ventricle (R),LV_R
+Cingulate Cortex Area 25 (R),A25_R
+Dorsal Acustic Stria (R),das_R
+Postsubiculum (R),Post_R
+Ventricular System 4thVentricle (R),4V_R
+Microcellular Tegmental Nucleus (R),MiTg_R
+Pretectal Nucleus (R),APT_R
+Latero Dorsal Thalamic Nucleus Ventro Lateral (R),LDVL_R
+Latero Posterior Nuclei of Thalamus (R),LP_R
+Anterior Thalamic Nuclei (R),AThal_R
+Red Nucleus Magnocellular (R),RMC_R
+Pararubral Nucleus (R),PaR_R
+Retro Rubral Field (R),RR_R
+Cerebrospinal fluid (R),CSF_R
+IntermediateReticularNucleus (R),IRN_R
+PosteriorDorsal ParaventricularMedialParvicellular Posterior LateralHypothalamus (R),PHD_PaMP_Post_and_LatHy_R
+Prerubral Forel (R),PR_p3Tg_L_R
+PVG of Hypothalamus (R),PVG_R
+Basal Lateral Amygdala (R),BLA_R
+"TotalBrain (L,R)",Brain

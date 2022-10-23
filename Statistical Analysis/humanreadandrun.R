@@ -138,6 +138,8 @@ plot_list = list()
 
 # Read top regions CSVs
 for (j in c('positive', 'negative')) {
+  # For tracking plotting and debugging
+  print(paste(j, 'effect size regions'))
   for (i in 1:length(comp_groups)) {
     comparison = comp_groups[i] # 'st', 'sw', or 'tw'
     top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/',comparison,'_regs/top_',substr(j,1,3),'_regions_',comparison,'.csv',sep=""))
@@ -150,18 +152,24 @@ for (j in c('positive', 'negative')) {
     
     graph_list = list()
     for (k in 1:3) {
-      res.aov <- aov(get(sig_reg[k]) ~ Treatment, data = data)
-      tuk=tukey_hsd(res.aov)
-      data_temp <- data[,c("Treatment",sig_reg[k])] %>% setNames(c("treatment","region"))
-      tuk <- add_y_position(tuk, data=data_temp, formula=region ~ treatment)
-      pbar_tab <- tuk[,c("group1", "group2", "p.adj", "y.position")]
-
-      p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[k])) + stat_pvalue_manual(pbar_tab, label = "p.adj", size = 3, tip.length = 0, hide.ns = TRUE) +
-        geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
-        labs(title=reg_struc[k], subtitle=paste("P-value of ",toString(pvals_regs[k])," | Effect size of ",toString(eff_sizes[k])), y="", x="") + theme_bw() +
-        theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
-      
-      graph_list[[k]] = p
+      if (is.na(sig_reg[k]) == F) {
+        res.aov <- aov(get(sig_reg[k]) ~ Treatment, data = data)
+        tuk=tukey_hsd(res.aov)
+        data_temp <- data[,c("Treatment",sig_reg[k])] %>% setNames(c("treatment","region"))
+        tuk <- add_y_position(tuk, data=data_temp, formula=region ~ treatment)
+        pbar_tab <- tuk[,c("group1", "group2", "p.adj", "y.position")]
+  
+        p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[k])) + stat_pvalue_manual(pbar_tab, label = "p.adj", size = 3, tip.length = 0, hide.ns = TRUE) +
+          geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
+          labs(title=reg_struc[k], subtitle=paste("P-value of ",toString(pvals_regs[k])," | Effect size of ",toString(eff_sizes[k])), y="", x="") + theme_bw() +
+          theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+        
+        graph_list[[k]] = p
+      }
+      else {
+        p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[length(sig_reg)])) + geom_blank() + theme_bw() + labs(x="", y="")
+        graph_list[[k]] = p
+      }
     }
     
     p1 <- graph_list[[1]] #+ theme(axis.title.y = element_text(margin = margin(r = 20)), axis.title.x = element_blank())
@@ -187,6 +195,8 @@ for (j in c('positive', 'negative')) {
     # Saving individual plots
     File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
     ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
+    
+    # For tracking plotting and debugging
     print(paste(comparison, 'complete'))
   }
   
