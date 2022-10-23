@@ -1,11 +1,70 @@
 Abbreviation,Structure,P-value,Effect Size
-MEnt_R,Medial Entorhinal Cortex (R),0.000926,2.49981338968229
-S1HL_R,Primary Somatosensory Cortex Hindlimb Region (R),0.00291,2.37017275978977
-V1M_R,Primary Visual Cortex Monocular Area (R),0.0116,2.36798810168686
-S1HL_L,Primary Somatosensory Cortex Hindlimb Region (L),0.00315,2.10043305298029
-VIEnt_R,Ventral Intermediate Entorhinal Cortex (R),0.00168,2.00760585615256
-PRh_L,Perirhinal Cortex (L),0.00956,1.97304623679323
-V2ML_L,Secondary Visual Cortex Mediolateral Area (L),0.0174,1.85669303022507
-DLEnt_L,Dorsolateral Entorhinal Cortex (L),0.00224,1.73365943649753
-V2ML_R,Secondary Visual Cortex Mediolateral Area (R),0.0118,1.67647179819113
-DIEnt_R,Dorsal Intermediate Entorhinal Cortex (R),0.000544,1.62150395940442
+TeA_L,Temporal Association Cortex (L),3.87e-05,3.86166702775338
+V2MM_R,Secondary Visual Cortex Mediomedial Area (R),8.98e-05,3.46297627915147
+A30_L,Cingulate Cortex Area 30 (L),0.000224,3.38398186975456
+A30_R,Cingulate Cortex Area 30 (R),0.000133,3.21796806140861
+Tg_L,Tegmental Nucleus (L),6.62e-05,3.21649923703837
+V2L_R,Secondary Visual CortexLateral Area (R),9.56e-05,2.85815321401583
+Sub_PP_L,Subbrachial Nucleus and Peripeduncular Nucleus (L),3.63e-05,2.83851594653511
+A24b_L,Cingulate Cortex Area 24b (L),0.000455,2.78381770193629
+V2MM_L,Secondary Visual Cortex Mediomedial Area (L),5.95e-05,2.76116893804029
+A24b_R,Cingulate Cortex Area 24b (R),8.79e-06,2.69837590308028
+TeA_R,Temporal Association Cortex (R),0.00572,2.66023804255115
+V2L_L,Secondary Visual CortexLateral Area (L),0.000471,2.6567686292458
+MPtA_R,Medial Parietal Association Cortex (R),9.01e-05,2.56549015564478
+S2_L,Secondary Somatosensory Cortex (L),0.000667,2.49591735359042
+M2_R,Secondary Motor Cortex (R),1.24e-05,2.45149348194756
+DLO_L,Dorsolateral Orbital Cortex (L),0.000615,2.42263524396075
+MPtA_L,Medial Parietal Association Cortex (L),0.000212,2.40675744065727
+LO_L,Lateral Orbital Cortex (L),0.000484,2.33270415344547
+A24aPrime_R,Cingulate Cortex Area 24a prime (R),0.000147,2.27695176012907
+Ins_L,Insular Cortex (L),0.000457,2.23891698984181
+V2ML_R,Secondary Visual Cortex Mediolateral Area (R),6.45e-05,2.15061161760032
+A24bPrime_L,Cingulate Cortex Area 24b prime (L),0.00255,2.08035382039098
+DLO_R,Dorsolateral Orbital Cortex (R),0.0146,2.07301672617397
+A24aPrime_L,Cingulate Cortex Area 24a prime (L),0.000303,2.06728855141396
+V1M_R,Primary Visual Cortex Monocular Area (R),0.0297,2.06225545470606
+A29c_L,Cingulate Cortex Area 29c (L),0.00694,2.04354977408207
+Ect_L,Ectorhinal Cortex (L),0.00124,2.0262540239365
+VO_R,Ventral Orbital Cortex (R),0.00122,2.00717027947482
+A24bPrime_R,Cingulate Cortex Area 24b prime (R),0.000488,1.99138936999096
+MGN_L,Medial Geniculate Nucleus (L),0.000684,1.97889573917031
+PAG_L,Periaquaductal Grey (L),0.000583,1.97014141608713
+Ins_R,Insular Cortex (R),0.0249,1.94246892942149
+Tg_R,Tegmental Nucleus (R),0.00374,1.93963386017758
+V1M_L,Primary Visual Cortex Monocular Area (L),0.0169,1.92821030803519
+A29c_R,Cingulate Cortex Area 29c (R),0.00216,1.92222671951929
+Au1_L,Primary Auditory Cortex (L),0.00649,1.91067720768937
+Vpal_L,Ventral Pallidum (L),0.0032,1.89867833764997
+AuD_L,Secondary Auditory Cortex Dorsal Part (L),0.00316,1.86379569633411
+DCl_R,Dorsal Claustrum (R),0.00133,1.85436202356044
+Amy_L,Amygdala (L),0.00422,1.83044670100967
+FrA_R,Frontal Association Cortex (R),0.000386,1.80057594452689
+VCl_R,Ventral Claustrum (R),0.00402,1.76509678832665
+Fr3_L,Frontal Cortex Area 3 (L),0.00261,1.74200433057404
+BLA_R,Basal Lateral Amygdala (R),0.00397,1.68042096668071
+VCl_L,Ventral Claustrum (L),0.00293,1.66979940643219
+LGN_L,Lateral Geniculate Nucleus (L),0.00475,1.65534419401141
+FasMed_L,Fastigial Medial Nucleus of Cerebellum (L),0.0112,1.64747753695676
+BLA_L,Basal Lateral Amygdala (L),0.014,1.64692967931752
+DCl_L,Dorsal Claustrum (L),0.0159,1.60517794302237
+CEnt_L,Caudomedial Entorhinal Cortex (L),0.00242,1.58004274022021
+AuV_L,Secondary Auditory Cortex Ventral Part (L),0.0401,1.55475055112894
+Preopt_L,Preoptic Telencephalon (L),0.02,1.53816320775912
+LPtA_R,Lateral Parietal Association Cortex (R),0.000945,1.49593009166763
+PRh_L,Perirhinal Cortex (L),0.00984,1.44670981305663
+PRh_R,Perirhinal Cortex (R),0.00621,1.42927828846121
+Pir_R,Piriform Cortex (R),0.00348,1.35935056716201
+M2_L,Secondary Motor Cortex (L),0.000845,1.30531531794027
+VO_L,Ventral Orbital Cortex (L),0.011,1.30325167783118
+FrA_L,Frontal Association Cortex (L),0.000654,1.27196355086262
+DLEnt_R,Dorsolateral Entorhinal Cortex (R),0.00384,1.26008924459529
+SPT_R,Septum (R),0.00617,1.23722813192888
+mt_R,Mamillothalamic Tract (R),0.0153,1.15105312799669
+S1FL_L,Primary Somatosensory CortexForelimb Region (L),0.00304,1.11120730570619
+Amy_R,Amygdala (R),0.0151,1.08271151154244
+M1_R,Primary Motor Cortex (R),0.00901,1.05769702666024
+PtPR_L,Parietal Cortex Posterior Area Rostral Part (L),0.00609,1.05675589437653
+LDVL_L,Latero Dorsal Thalamic Nucleus Ventro Lateral (L),0.0207,1.03865209141856
+Vpal_R,Ventral Pallidum (R),0.0149,1.02172323156876
+DTT_L,Dorsal Tenia Tecta (L),0.00567,0.812373063026258
