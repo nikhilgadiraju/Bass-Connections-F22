@@ -1,7 +1,7 @@
 # Library Imports
 library(data.table)
 library(readxl)
-library(rstatix)a
+library(rstatix)
 library(jmv)
 library(ggplot2)
 library(patchwork)
@@ -20,8 +20,8 @@ library(rstatix)
 path_fa="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
 file_list=list.files(path_fa)
 
-path_index="/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/Absolute Files/index.csv"
-index=read.csv(path_index)[,c('index2','Abbreviation')]
+path_struc_ind="/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/struc_abbrev.csv"
+index=read.csv(path_struc_ind)
 
 path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
 metadata = read.csv(path_metadata)
@@ -32,7 +32,7 @@ fa_tab = matrix(NA,length(file_list),len)
 
 for (i in 1:length(file_list)) {
   temp=read.delim(paste0(path_fa,file_list[i]))
-  fa_tab[i,2:len]=temp$fa_mean[2:len]
+  fa_tab[i,2:len]=as.numeric(temp$fa_mean[2:len])
   fa_tab[i,1]=substr(file_list[i], 1, 6)
 }
 
@@ -44,7 +44,8 @@ for (g in 1:length(fa_tab[,'N-number'])) {
   fa_tab[,'N-number'][g] = metadata$Treatment[treat_row]
 }
 colnames(fa_tab)[1] = 'Treatment'
-data = na.omit(fa_tab)
+data = data.frame(fa_tab)
+data[,2:len] = apply(data[,2:len], 2, function(x) as.numeric(x)) # Convert data columns from character to numeric using 'apply'
 
 # # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 # data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
@@ -83,8 +84,8 @@ len = dim(data)[2]
 for (i in 1:(len-1))  {
   tempname=rownames(pvalsresults)[i]
 
-  mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
-  eff=eta_squared(mylm, partial = FALSE)
+  mylm <- lm(as.numeric(get(tempname)) ~ as.factor(Treatment), data=data) 
+  eff=eta_squared(mylm)
   aov_table = anova(mylm)
   
   # Ho: data come from a normal distribution, H1: data do not come from a normal distribution
