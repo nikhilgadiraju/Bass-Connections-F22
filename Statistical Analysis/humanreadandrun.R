@@ -129,7 +129,7 @@ sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05 &
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 & # For Leven's Test
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,] # For Shapiro-Wilk Test
 
-posthoc = matrix(NA,dim(sig)[1],7)
+posthoc = matrix(NA,dim(sig)[1],13)
 posthoc[,1]=sig[,1]
 
 # Loop through each brain region and conduct a Tukey test and report p-values for each comparison group
@@ -144,11 +144,15 @@ for (i in 1:dim(sig)[1]) {
     posthoc[i,j+4]=hedges_out$Hedges_g #Go through columns 5, 6, 7
   }
   posthoc[i,2:4]=tuk$p.adj
+  posthoc[i,c(8,10,12)] = tuk$conf.low
+  posthoc[i,c(9,11,13)] = tuk$conf.high
 }
 
 # Construct output CSV and save
 colnames(posthoc)=c(colnames(sig)[1],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",
-                    "ST Comparison Group Effect Size","SW Comparison Group Effect Size","TW Comparison Group Effect Size")
+                    "ST Comparison Group Effect Size","SW Comparison Group Effect Size","TW Comparison Group Effect Size",
+                    "ST Comparison Group Lower CI", "ST Comparison Group Higher CI", "SW Comparison Group Lower CI", "SW Comparison Group Higher CI", 
+                    "TW Comparison Group Lower CI", "ST Comparison Group Higher CI")
 rownames(posthoc)=rownames(sig)
 
 # Write output
