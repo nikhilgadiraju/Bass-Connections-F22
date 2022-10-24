@@ -68,11 +68,11 @@ data=na.omit(data)
 data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]] 
 
 # Create blank matrix to represent p values (column) for each brain regions (rows)
-colnames_vec = c("FDR corrected Pvalue", "Effect Size Eta^2", 
-                 "CI lower bound", "CI upper bound", 
-                 "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
+colnames_vec = c("Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
                  "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group", 
-                 "F-value", "Shapiro-Wilk Pvalue (norm)", "Levene Test Pvalue (homog)")
+                 "Uncorrected Pvalue", "FDR corrected Pvalue", "F-value", "Effect Size Eta^2", 
+                 "CI lower bound", "CI upper bound", 
+                 "Shapiro-Wilk Pvalue (norm)", "Levene Test Pvalue (homog)")
 pvalsresults=matrix(NA,(dim(data)[2]-1), length(colnames_vec))
 rownames(pvalsresults)=names(data)[2:dim(data)[2]]
 colnames(pvalsresults)=colnames_vec
@@ -104,7 +104,7 @@ for (i in 1:(len-1))  {
   means=by(data[,i+1],as.factor(data$Treatment), mean)
   sds=by(data[,i+1],as.factor(data$Treatment), sd)
   
-  val_list = c(aov_table$`Pr(>F)`[1], eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$'F value'[1], normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
+  val_list = c(means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$`Pr(>F)`[1], aov_table$`Pr(>F)`[1], aov_table$'F value'[1], eff$Eta2, eff$CI_low, eff$CI_high, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
@@ -120,17 +120,17 @@ pvalsresultsadjusted=pvalsresults
 # correction methods, but we will be using the Benjamini & Hochberg Correction method (specified by either 'BH or 'fdr')
 # References: https://www.youtube.com/watch?v=rZKa4tW2NKs&t=483s
 #             https://www.youtube.com/watch?v=K8LQSvtjcEo&t=43s
-pvalsresultsadjusted[,1] = p.adjust(pvalsresultsadjusted[,1], "fdr") #Benjamini & Hochberg
+pvalsresultsadjusted[,8] = p.adjust(pvalsresultsadjusted[,8], "fdr") #Benjamini & Hochberg
 
 
 # Filter 'pvalsresultesadjusted' table to display brain regions that have significant p values (p<0.05)
 #sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,] 
-sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05 & 
+sig = pvalsresultsadjusted[pvalsresultsadjusted[,8]<=0.05 & 
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 & # For Leven's Test
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,] # For Shapiro-Wilk Test
 
 posthoc = matrix(NA,dim(sig)[1],13)
-posthoc[,1]=sig[,1]
+posthoc[,1]=sig[,8]
 
 # Loop through each brain region and conduct a Tukey test and report p-values for each comparison group
 for (i in 1:dim(sig)[1]) {
@@ -149,7 +149,7 @@ for (i in 1:dim(sig)[1]) {
 }
 
 # Construct output CSV and save
-colnames(posthoc)=c(colnames(sig)[1],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",
+colnames(posthoc)=c(colnames(sig)[8],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",
                     "ST Comparison Group Effect Size","SW Comparison Group Effect Size","TW Comparison Group Effect Size",
                     "ST Comparison Group Lower CI", "ST Comparison Group Higher CI", "SW Comparison Group Lower CI", "SW Comparison Group Higher CI", 
                     "TW Comparison Group Lower CI", "ST Comparison Group Higher CI")
