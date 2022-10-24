@@ -16,10 +16,46 @@ library(cowplot)
 library(ggpubr)
 library(rstatix)
 
+# Whole Brain Analysis (Using Nariman's data)
+path_vol="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
+file_list=list.files(path_vol)
+
+path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
+metadata = read.csv(path_metadata)
+
+temp=read.delim( paste0(path_vol,file_list[1]) )
+len=length(temp$volume_mm3)
+vol_tab = matrix(NA,length(file_list),2) # Only printing treatment and brain volume
+
+for (i in 1:length(file_list)) {
+  temp=read.delim(paste0(path_vol,file_list[i]))
+  vol_tab[i,2]=sum(temp$volume_mm3[2:len])
+  vol_tab[i,1]=substr(file_list[i], 1, 6)
+}
+
+colnames(vol_tab) <- c('N-number', 'Volume')
+vol_tab <- vol_tab[which(metadata$N.number %in% vol_tab[,'N-number']),]
+
+for (g in 1:length(vol_tab[,'N-number'])) {
+  treat_row = which(metadata$N.number == metadata$N.number[g])
+  vol_tab[,'N-number'][g] = metadata$Treatment[treat_row]
+}
+colnames(vol_tab)[1] = 'Treatment'
+wb_data = data.frame(vol_tab)
+wb_data[,2] = as.numeric(wb_data[,2])
+
+# Result of whole-brain ANOVA
+wb_aov = anova(lm(Volume ~ Treatment, data=wb_data))
+
+# TRUE if anova p-value < 0.05
+# paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
+
+
+# %% Begin Statistical Analysis
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
 
-  # Replace appended "X" to region names due to read.csv wrapper
+# Replace appended "X" to region names due to read.csv wrapper
 old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
 new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
