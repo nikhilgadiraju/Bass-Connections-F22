@@ -16,10 +16,46 @@ library(cowplot)
 library(ggpubr)
 library(rstatix)
 
+# Whole Brain Analysis (Using Nariman's data)
+path_vol="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
+file_list=list.files(path_vol)
+
+path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
+metadata = read.csv(path_metadata)
+
+temp=read.delim( paste0(path_vol,file_list[1]) )
+len=length(temp$volume_mm3)
+vol_tab = matrix(NA,length(file_list),2) # Only printing treatment and brain volume
+
+for (i in 1:length(file_list)) {
+  temp=read.delim(paste0(path_vol,file_list[i]))
+  vol_tab[i,2]=sum(temp$volume_mm3[2:len])
+  vol_tab[i,1]=substr(file_list[i], 1, 6)
+}
+
+colnames(vol_tab) <- c('N-number', 'Volume')
+vol_tab <- vol_tab[which(metadata$N.number %in% vol_tab[,'N-number']),]
+
+for (g in 1:length(vol_tab[,'N-number'])) {
+  treat_row = which(metadata$N.number == metadata$N.number[g])
+  vol_tab[,'N-number'][g] = metadata$Treatment[treat_row]
+}
+colnames(vol_tab)[1] = 'Treatment'
+wb_data = data.frame(vol_tab)
+wb_data[,2] = as.numeric(wb_data[,2])
+
+# Result of whole-brain ANOVA
+wb_aov = anova(lm(Volume ~ Treatment, data=wb_data))
+
+# TRUE if anova p-value < 0.05
+# paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
+
+
+# %% Begin Statistical Analysis
 # Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
 
-  # Replace appended "X" to region names due to read.csv wrapper
+# Replace appended "X" to region names due to read.csv wrapper
 old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
 new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
@@ -53,17 +89,13 @@ len = dim(data)[2]
 for (i in 1:(len-1))  {
   tempname=rownames(pvalsresults)[i]
   
-  res.aov <- anova_test(get(tempname) ~ as.factor(Treatment), data = data)
-  aov_table = get_anova_table(res.aov)
-  
   mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
-  eff=eta_squared(mylm, partial = FALSE)
-  
-  anova(mylm)
+  eff=effectsize::eta_squared(mylm, partial = F)
+  aov_table = anova(mylm)
   
   # Ho: data come from a normal distribution, H1: data do not come from a normal distribution
   # If p > 0.05, do NOT reject null, and thus data is normal
-  normality = shapiro.test(lm$residuals)
+  normality = shapiro.test(mylm$residuals)
   
   # Ho: variances are equal, H1: at least one variance is different
   # If p > 0.05, do NOT reject null, and thus data has equal variances (homogeneity == equality of variances)
@@ -72,7 +104,7 @@ for (i in 1:(len-1))  {
   means=by(data[,i+1],as.factor(data$Treatment), mean)
   sds=by(data[,i+1],as.factor(data$Treatment), sd)
   
-  val_list = c(aov_table$p, eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$F, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05 
+  val_list = c(aov_table$`Pr(>F)`[1], eff$Eta2, eff$CI_low, eff$CI_high, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$'F value'[1], normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
@@ -94,8 +126,8 @@ pvalsresultsadjusted[,1] = p.adjust(pvalsresultsadjusted[,1], "fdr") #Benjamini 
 # Filter 'pvalsresultesadjusted' table to display brain regions that have significant p values (p<0.05)
 #sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,] 
 sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05 & 
-                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 &
-                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,]
+                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 & # For Leven's Test
+                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,] # For Shapiro-Wilk Test
 
 posthoc = matrix(NA,dim(sig)[1],7)
 posthoc[,1]=sig[,1]
@@ -105,8 +137,8 @@ for (i in 1:dim(sig)[1]) {
   tempname=rownames(sig)[i]
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
   tuk=tukey_hsd(res.aov)
-  treatment = c('sedentary', 'sedentary', 'wheel_only')
   control = c('wheel_only', 'treadmill', 'treadmill')
+  treatment = c('sedentary', 'sedentary', 'wheel_only')
   for (j in 1:length(control)){
     hedges_out = hedges_g(get(tempname) ~ factor(Treatment, levels=c(control[j], treatment[j])), data=data)
     posthoc[i,j+4]=hedges_out$Hedges_g #Go through columns 5, 6, 7
@@ -142,6 +174,8 @@ plot_list = list()
 
 # Read top regions CSVs
 for (j in c('positive', 'negative')) {
+  # For tracking plotting and debugging
+  print(paste(j, 'effect size regions'))
   for (i in 1:length(comp_groups)) {
     comparison = comp_groups[i] # 'st', 'sw', or 'tw'
     top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/',comparison,'_regs/top_',substr(j,1,3),'_regions_',comparison,'.csv',sep=""))
@@ -154,18 +188,24 @@ for (j in c('positive', 'negative')) {
     
     graph_list = list()
     for (k in 1:3) {
-      res.aov <- aov(get(sig_reg[k]) ~ Treatment, data = data)
-      tuk=tukey_hsd(res.aov)
-      data_temp <- data[,c("Treatment",sig_reg[k])] %>% setNames(c("treatment","region"))
-      tuk <- add_y_position(tuk, data=data_temp, formula=region ~ treatment)
-      pbar_tab <- tuk[,c("group1", "group2", "p.adj", "y.position")]
-
-      p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[k])) + stat_pvalue_manual(pbar_tab, label = "p.adj", size = 3, tip.length = 0, hide.ns = TRUE) +
-        geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
-        labs(title=reg_struc[k], subtitle=paste("P-value of ",toString(pvals_regs[k])," | Effect size of ",toString(eff_sizes[k])), y="", x="") + theme_bw() +
-        theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
-      
-      graph_list[[k]] = p
+      if (is.na(sig_reg[k]) == F) {
+        res.aov <- aov(get(sig_reg[k]) ~ Treatment, data = data)
+        tuk=tukey_hsd(res.aov)
+        data_temp <- data[,c("Treatment",sig_reg[k])] %>% setNames(c("treatment","region"))
+        tuk <- add_y_position(tuk, data=data_temp, formula=region ~ treatment)
+        pbar_tab <- tuk[,c("group1", "group2", "p.adj", "y.position")]
+  
+        p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[k])) + stat_pvalue_manual(pbar_tab, label = "p.adj", size = 3, tip.length = 0, hide.ns = TRUE) +
+          geom_violin() + geom_boxplot(width=0.1) + geom_dotplot(binaxis= "y", stackdir = "center", dotsize=0.5, fill='red') + 
+          labs(title=reg_struc[k], subtitle=paste("P-value of ",toString(pvals_regs[k])," | Effect size of ",toString(eff_sizes[k])), y="", x="") + theme_bw() +
+          theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+        
+        graph_list[[k]] = p
+      }
+      else {
+        p <- ggplot(data, aes_string(x="Treatment", y=sig_reg[length(sig_reg)])) + geom_blank() + theme_bw() + labs(x="", y="")
+        graph_list[[k]] = p
+      }
     }
     
     p1 <- graph_list[[1]] #+ theme(axis.title.y = element_text(margin = margin(r = 20)), axis.title.x = element_blank())
@@ -191,6 +231,9 @@ for (j in c('positive', 'negative')) {
     # Saving individual plots
     File <- paste("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Output Figures/",j,"_eff/",comparison,'_',substr(j,1,3),'.png',sep="")
     ggsave(File, plot = full_plot, width=1213, height=514, dpi = 150, units='px', scale=2)
+    
+    # For tracking plotting and debugging
+    print(paste(comparison, 'complete'))
   }
   
   comp_plot = plot_grid(plot_list[[1]], plot_list[[2]], plot_list[[3]], nrow=3, ncol=1)
