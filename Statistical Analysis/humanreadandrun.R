@@ -48,7 +48,7 @@ wb_data[,2] = as.numeric(wb_data[,2])
 wb_aov = anova(lm(Volume ~ Treatment, data=wb_data))
 
 # TRUE if anova p-value < 0.05
-# paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
+paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
 
 
 # %% Begin Statistical Analysis
