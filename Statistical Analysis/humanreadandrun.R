@@ -1,4 +1,4 @@
-# Library Imports
+### LIBRARY IMPORTS
 library(data.table)
 library(readxl)
 library(rstatix)
@@ -16,43 +16,53 @@ library(cowplot)
 library(ggpubr)
 library(rstatix)
 
-# Whole Brain Analysis (Using Nariman's data)
+### WHOLE BRAIN ANALYSIS
+# Specify and read folder with all of Nariman's data (individual_label_statistics/)
 path_vol="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
 file_list=list.files(path_vol)
 
+# Specify and read ID_Treatment.CSV - this CSV associates contains metadata for all the mice brain
+# data files: Original ID, Modified ID, N-number, Treatment
 path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
 metadata = read.csv(path_metadata)
 
+# Create empty matrix to hold total brain volume for each brain dataset
 temp=read.delim( paste0(path_vol,file_list[1]) )
 len=length(temp$volume_mm3)
-vol_tab = matrix(NA,length(file_list),2) # Only printing treatment and brain volume
+vol_tab = matrix(NA,length(file_list),2)
 
+# Populate matrix with brain dataset filename and total volume (mm3)
 for (i in 1:length(file_list)) {
   temp=read.delim(paste0(path_vol,file_list[i]))
   vol_tab[i,2]=sum(temp$volume_mm3[2:len])
   vol_tab[i,1]=substr(file_list[i], 1, 6)
 }
 
+# Set column names and filter vol_tab to only display CVN mice we are analyzing (by N-numbers)
 colnames(vol_tab) <- c('N-number', 'Volume')
 vol_tab <- vol_tab[which(metadata$N.number %in% vol_tab[,'N-number']),]
 
+# Replace N-numbers with each dataset's treatment condition for downstream ANOVA
 for (g in 1:length(vol_tab[,'N-number'])) {
   treat_row = which(metadata$N.number == metadata$N.number[g])
   vol_tab[,'N-number'][g] = metadata$Treatment[treat_row]
 }
+
+# Rename 'N-number' column title with 'Treatment' column title; also convert volume column
+# to a numeric column type
 colnames(vol_tab)[1] = 'Treatment'
 wb_data = data.frame(vol_tab)
 wb_data[,2] = as.numeric(wb_data[,2])
 
-# Result of whole-brain ANOVA
+# Conduct and report whole-brain ANOVA
 wb_aov = anova(lm(Volume ~ Treatment, data=wb_data))
 
-# TRUE if anova p-value < 0.05
+# Print TRUE if anova p-value < 0.05
 paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
 
 
-# %% Begin Statistical Analysis
-# Read voxel volumes w/ treatments excel file; remove the first 3 columns (index, filename, ID) and leave treatment and data columns; remove NaNs
+### BEGIN STATISTICAL ANALYSIS
+# Read voxel volumes w/ treatments excel file
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
 
 # Replace appended "X" to region names due to read.csv wrapper
@@ -60,6 +70,7 @@ old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
 new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
 
+# remove the first 3 columns (index, filename, ID) and leave treatment and data columns; omit NaNs
 data=data[  , -c(1,2,3)] 
 dim(data)
 data=na.omit(data) 
@@ -67,7 +78,7 @@ data=na.omit(data)
 # Convert voxel counts to proportions of total brain volume
 data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]] 
 
-# Create blank matrix to represent p values (column) for each brain regions (rows)
+## Create blank matrix to represent p values (column) for each brain region (rows)
 colnames_vec = c("Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
                  "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group", 
                  "Uncorrected Pvalue", "FDR corrected Pvalue", "F-value", "Effect Size Eta^2", 
@@ -87,10 +98,16 @@ colnames(pvalsresults)=colnames_vec
 # https://stats.libretexts.org/Bookshelves/Applied_Statistics/Book%3A_Learning_Statistics_with_R_-_A_tutorial_for_Psychology_Students_and_other_Beginners_(Navarro)/16%3A_Factorial_ANOVA/16.06%3A_ANOVA_As_a_Linear_Model
 len = dim(data)[2]
 for (i in 1:(len-1))  {
+  # Set 'tempname' to the currently analyzed brain regions
   tempname=rownames(pvalsresults)[i]
   
+  # Create a linear model object using a given brain region and the data associated with the three
+  # categories: 'sedentary', 'treadmill', 'wheel_only'. Caclulate eta-squared effect size for the overall model 
   mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
   eff=effectsize::eta_squared(mylm, partial = F)
+  
+  # Conduct ANOVA on linear model to evaluate whether there is a significant difference between exercise treatment groups
+  # within a given brain region; expect the means to be different and reject null (u_sedentary = u_treadmill = u_wheel-only)
   aov_table = anova(mylm)
   
   # Ho: data come from a normal distribution, H1: data do not come from a normal distribution
