@@ -102,7 +102,7 @@ for (i in 1:(len-1))  {
   tempname=rownames(pvalsresults)[i]
   
   # Create a linear model object using a given brain region and the data associated with the three
-  # categories: 'sedentary', 'treadmill', 'wheel_only'. Caclulate eta-squared effect size for the overall model 
+  # categories: 'sedentary', 'treadmill', 'wheel_only'. Calculate eta-squared effect size for the overall model 
   mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
   eff=effectsize::eta_squared(mylm, partial = F)
   
@@ -118,9 +118,12 @@ for (i in 1:(len-1))  {
   # If p > 0.05, do NOT reject null, and thus data has equal variances (homogeneity == equality of variances)
   homogeneity = leveneTest(get(tempname) ~ as.factor(Treatment), data=data)
 
+  # Calculate the mean and standard deviation for each treatment group within the current brain region dataset
   means=by(data[,i+1],as.factor(data$Treatment), mean)
   sds=by(data[,i+1],as.factor(data$Treatment), sd)
   
+  # Output calculated values to the 'pvalresults' matrix in the user-defined order; the 'pvalresults' matrix will later
+  # be used to create the 'posthoc_group_stats.csv' output
   val_list = c(means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$`Pr(>F)`[1], aov_table$`Pr(>F)`[1], aov_table$'F value'[1], eff$Eta2, eff$CI_low, eff$CI_high, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
@@ -130,7 +133,7 @@ for (i in 1:(len-1))  {
 # Create new 'pvalsresultadjusted' variable to eventually populated with FDR-corrected values
 pvalsresultsadjusted=pvalsresults
 
-###adjust pvalues Benjamini & Hochberg
+## adjust pvalues Benjamini & Hochberg
 # To understand what we're doing here, we are comparing all the p-values determined from the ANOVAs conducted on all
 # 332 brain regions. Because we can treat each ANOVA as an individual hypothesis test, we need to account for the 
 # multiple comparisons effect in the type 1 error rate. This can be done using various P-value (or significance) 
@@ -146,41 +149,57 @@ sig = pvalsresultsadjusted[pvalsresultsadjusted[,8]<=0.05 &
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 & # For Leven's Test
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,] # For Shapiro-Wilk Test
 
+# Create empty 'posthoc' matrix to eventually populate with all gruop comparison data; 
+# Set first 'posthoc' column equal to 8th column of 'sig' matrix (FDR-corrected P-value column)
 posthoc = matrix(NA,dim(sig)[1],13)
 posthoc[,1]=sig[,8]
 
-# Loop through each brain region and conduct a Tukey test and report p-values for each comparison group
+# Loop through each significant (FDR-corrected p-value < 0.05) brain region (from 'sig' matrix) and conduct 
+# a Tukey test and report p-values for each comparison group
 for (i in 1:dim(sig)[1]) {
+  # Set 'tempname' to the currently analyzed brain regions
   tempname=rownames(sig)[i]
+  
+  # Conduct ANOVA on currently analyzed brain region and use ANOVA output to conduct post-hoc Tukey test
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
   tuk=tukey_hsd(res.aov)
+  
+  # Define Tukey comparison groups for calculating hedge's G effect size. Note that these groups are mannually
+  # set so that effect sizes can correlate with changes in regional volumes (e.g. negative effect size correlates
+  # with decrease in regional volumes)
   control = c('wheel_only', 'treadmill', 'treadmill')
   treatment = c('sedentary', 'sedentary', 'wheel_only')
+  
+  # For given brain region, loop through comparison groups and calculate hedge's g for each comparison groups
   for (j in 1:length(control)){
     hedges_out = hedges_g(get(tempname) ~ factor(Treatment, levels=c(control[j], treatment[j])), data=data)
     posthoc[i,j+4]=hedges_out$Hedges_g #Go through columns 5, 6, 7
   }
+  
+  # Add adjusted P-value and add low and high confidence intervals to 'posthoc' matrix
   posthoc[i,2:4]=tuk$p.adj
   posthoc[i,c(8,10,12)] = tuk$conf.low
   posthoc[i,c(9,11,13)] = tuk$conf.high
 }
 
-# Construct output CSV and save
+# Define output CSV column and row names
 colnames(posthoc)=c(colnames(sig)[8],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",
                     "ST Comparison Group Effect Size","SW Comparison Group Effect Size","TW Comparison Group Effect Size",
                     "ST Comparison Group Lower CI", "ST Comparison Group Higher CI", "SW Comparison Group Lower CI", "SW Comparison Group Higher CI", 
                     "TW Comparison Group Lower CI", "ST Comparison Group Higher CI")
 rownames(posthoc)=rownames(sig)
 
-# Write output
+# Save output CSV to specific folder string
 write.csv(sig, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/posthoc_group_stats.csv')
 write.csv(posthoc, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/posthoc_comparison_stats.csv')
 
-# Run read_posthoc.py
+# Activate Venv and run read_posthoc.py
+# read_post.py serves to read above output CSV (posthoc_comparison_stats.csv specifically), and sort 
+# brain regions by effect sizes and postivitiy/negativity
 setwd("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22")
 system("source BassVenv/bin/activate && python 'Statistical Analysis'/read_posthoc.py", wait=TRUE)
 
-# Update Treatment names
+# Update Treatment names for plotting
 data[,"Treatment"] = data[,"Treatment"] %>% str_replace_all(c("wheel_only" = "Voluntary", "treadmill" = "Voluntary + Enforced", "sedentary" = "Sedentary"))
 
 # Define figure title hash/dict
@@ -189,19 +208,25 @@ dict[["st"]] = c("Sedentary", "Voluntary + Enforced")
 dict[["sw"]] = c("Sedentary", "Voluntary")
 dict[["tw"]] = c("Voluntary", "Voluntary + Enforced")
 
-# %% Plotting
+### PLOTTING
+# Set comparisong group vector to loop through: 'st': sedentary vs. treadmill, 'sw': sedentary vs. wheel_only
+# 'tw': treadmill vs. wheel_only
 comp_groups = c('st','sw','tw')
 plot_list = list()
 
-# Read top regions CSVs
+# Nested for loop: main loop specifies whether positive or negative effect sizes are being analysed
+# inner for loop specifies which comparison group is being analyzed
 for (j in c('positive', 'negative')) {
-  # For tracking plotting and debugging
   print(paste(j, 'effect size regions'))
   for (i in 1:length(comp_groups)) {
     comparison = comp_groups[i] # 'st', 'sw', or 'tw'
+    
+    # Based on whether we are looking at the positive/negative effect size group, or the 'st', 'sw', or 'tw' comparison group,
+    # we access the appropriate CSV in the below line; CSV is the output of the read_posthoc.py script
     top_comp=read.csv(paste('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/',comparison,'_regs/top_',substr(j,1,3),'_regions_',comparison,'.csv',sep=""))
     # data_comp = data[data$Treatment %in% dict[[i]],]
     
+    # Assign values based on CSV columns to significant region names, abbreviations, and p-values and effect sizes
     sig_reg = top_comp$Abbreviation
     reg_struc = top_comp$Structure
     pvals_regs = formatC(top_comp$P.value, format = "e", digits = 2)
