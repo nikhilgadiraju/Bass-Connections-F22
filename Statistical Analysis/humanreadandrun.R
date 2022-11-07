@@ -14,7 +14,6 @@ library(car)
 library(stringr)
 library(cowplot)
 library(ggpubr)
-library(rstatix)
 
 ### WHOLE BRAIN ANALYSIS
 # Specify and read folder with all of Nariman's data (individual_label_statistics/)
@@ -26,36 +25,42 @@ file_list=list.files(path_vol)
 path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
 metadata = read.csv(path_metadata)
 
+# *******
+# Remove 'A19120503_T1' ID dataset since we don't have that file
+metadata = metadata[!(metadata$Modified.ID=='A19120503_T1'),]
+# *******
+
 # Create empty matrix to hold total brain volume for each brain dataset
 temp=read.delim( paste0(path_vol,file_list[1]) )
 len=length(temp$volume_mm3)
-vol_tab = matrix(NA,length(file_list),2)
+vol_tab = matrix(NA,length(file_list),3)
 
 # Populate matrix with brain dataset filename and total volume (mm3)
 for (i in 1:length(file_list)) {
   temp=read.delim(paste0(path_vol,file_list[i]))
-  vol_tab[i,2]=sum(temp$volume_mm3[2:len])
-  vol_tab[i,1]=substr(file_list[i], 1, 6)
+  vol_tab[i,3]=sum(temp$volume_mm3[2:len])
+  vol_tab[i,2]=substr(file_list[i], 1, 6)
 }
 
 # Set column names and filter vol_tab to only display CVN mice we are analyzing (by N-numbers)
-colnames(vol_tab) <- c('N-number', 'Volume')
+colnames(vol_tab) <- c('ID', 'N-number', 'Volume')
 vol_tab <- vol_tab[which(metadata$N.number %in% vol_tab[,'N-number']),]
 
 # Replace N-numbers with each dataset's treatment condition for downstream ANOVA
 for (g in 1:length(vol_tab[,'N-number'])) {
   treat_row = which(metadata$N.number == metadata$N.number[g])
   vol_tab[,'N-number'][g] = metadata$Treatment[treat_row]
+  vol_tab[,'ID'][g] = metadata$Modified.ID[treat_row]
 }
 
 # Rename 'N-number' column title with 'Treatment' column title; also convert volume column
 # to a numeric column type
-colnames(vol_tab)[1] = 'Treatment'
+colnames(vol_tab)[2] = 'Treatment'
 wb_data = data.frame(vol_tab)
-wb_data[,2] = as.numeric(wb_data[,2])
+wb_data[,3] = as.numeric(wb_data[,3])
 
 # Conduct and report whole-brain ANOVA
-wb_aov = anova(lm(Volume ~ Treatment, data=wb_data))
+wb_aov = anova(lm(Volume ~ Treatment, data=wb_data[,c('Treatment','Volume')]))
 
 # Print TRUE if anova p-value < 0.05
 paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
@@ -81,12 +86,16 @@ data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]]
 ## Create blank matrix to represent p values (column) for each brain region (rows)
 colnames_vec = c("Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
                  "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group", 
-                 "Uncorrected Pvalue", "FDR corrected Pvalue", "F-value", "Effect Size Eta^2", 
+                 "Uncorrected Pvalue", "FDR corrected Pvalue", "F-value", "Cohen's F Effect Size", "Effect Size Eta^2", 
                  "CI lower bound", "CI upper bound", 
                  "Shapiro-Wilk Pvalue (norm)", "Levene Test Pvalue (homog)")
 pvalsresults=matrix(NA,(dim(data)[2]-1), length(colnames_vec))
 rownames(pvalsresults)=names(data)[2:dim(data)[2]]
 colnames(pvalsresults)=colnames_vec
+
+# Append whole-brain region to end of data
+wb_data = wb_data[order(wb_data$Treatment, decreasing = TRUE), ]
+
 
 # Populate created matrix with ANOVA-generated p-values
 # Returning Partial Eta Squared (PES) effect size since we're using ANOVAs for each given brain region. Note
@@ -105,6 +114,7 @@ for (i in 1:(len-1))  {
   # categories: 'sedentary', 'treadmill', 'wheel_only'. Calculate eta-squared effect size for the overall model 
   mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
   eff=effectsize::eta_squared(mylm, partial = F)
+  cf=effectsize::cohens_f(mylm)
   
   # Conduct ANOVA on linear model to evaluate whether there is a significant difference between exercise treatment groups
   # within a given brain region; expect the means to be different and reject null (u_sedentary = u_treadmill = u_wheel-only)
@@ -124,7 +134,7 @@ for (i in 1:(len-1))  {
   
   # Output calculated values to the 'pvalresults' matrix in the user-defined order; the 'pvalresults' matrix will later
   # be used to create the 'posthoc_group_stats.csv' output
-  val_list = c(means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$`Pr(>F)`[1], aov_table$`Pr(>F)`[1], aov_table$'F value'[1], eff$Eta2, eff$CI_low, eff$CI_high, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
+  val_list = c(means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$`Pr(>F)`[1], aov_table$`Pr(>F)`[1], aov_table$'F value'[1], cf$Cohens_f, eff$Eta2, eff$CI_low, eff$CI_high, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
@@ -146,8 +156,10 @@ pvalsresultsadjusted[,8] = p.adjust(pvalsresultsadjusted[,8], "fdr") #Benjamini 
 # Filter 'pvalsresultesadjusted' table to display brain regions that have significant p values (p<0.05)
 #sig = pvalsresultsadjusted[pvalsresultsadjusted[,1]<=0.05,] 
 sig = pvalsresultsadjusted[pvalsresultsadjusted[,8]<=0.05 & 
-                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 & # For Leven's Test
+                           pvalsresultsadjusted[,ncol(pvalsresultsadjusted)]>0.05 & # For Levene's Test
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,] # For Shapiro-Wilk Test
+sig = as.data.frame(sig)
+sig <- sig[order(sig$`Cohen's F Effect Size`, decreasing = TRUE),]
 
 # Create empty 'posthoc' matrix to eventually populate with all gruop comparison data; 
 # Set first 'posthoc' column equal to 8th column of 'sig' matrix (FDR-corrected P-value column)
@@ -186,7 +198,7 @@ for (i in 1:dim(sig)[1]) {
 colnames(posthoc)=c(colnames(sig)[8],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",
                     "ST Comparison Group Effect Size","SW Comparison Group Effect Size","TW Comparison Group Effect Size",
                     "ST Comparison Group Lower CI", "ST Comparison Group Higher CI", "SW Comparison Group Lower CI", "SW Comparison Group Higher CI", 
-                    "TW Comparison Group Lower CI", "ST Comparison Group Higher CI")
+                    "TW Comparison Group Lower CI", "TW Comparison Group Higher CI")
 rownames(posthoc)=rownames(sig)
 
 # Save output CSV to specific folder string
