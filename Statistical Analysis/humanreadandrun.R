@@ -76,12 +76,12 @@ new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
 
 # remove the first 3 columns (index, filename, ID) and leave treatment and data columns; omit NaNs
-data=data[  , -c(1,2,3)] 
-dim(data)
+data=data[  , -c(1,2)]
 data=na.omit(data) 
+data_start <- 3
 
 # Convert voxel counts to proportions of total brain volume
-data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]] 
+data[,data_start:dim(data)[2]]=100*data[,data_start:dim(data)[2]] 
 
 ## Create blank matrix to represent p values (column) for each brain region (rows)
 colnames_vec = c("Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
@@ -89,13 +89,17 @@ colnames_vec = c("Mean sedentary group", "Mean voluntary group", "Mean voluntary
                  "Uncorrected Pvalue", "FDR corrected Pvalue", "F-value", "Cohen's F Effect Size", "Effect Size Eta^2", 
                  "CI lower bound", "CI upper bound", 
                  "Shapiro-Wilk Pvalue (norm)", "Levene Test Pvalue (homog)")
-pvalsresults=matrix(NA,(dim(data)[2]-1), length(colnames_vec))
-rownames(pvalsresults)=names(data)[2:dim(data)[2]]
+# Change '-2' expression based on number of non-numeric columns
+pvalsresults=matrix(NA,(dim(data)[2]-2), length(colnames_vec))
+rownames(pvalsresults)=names(data)[data_start:dim(data)[2]]
 colnames(pvalsresults)=colnames_vec
 
 # Append whole-brain region to end of data
-wb_data = wb_data[order(wb_data$Treatment, decreasing = TRUE), ]
+data = data[order(data$ID, decreasing = TRUE), ]
+wb_data = wb_data[order(wb_data$ID, decreasing = TRUE), ]
 
+data$Brain <- wb_data$Volume
+data = data[order(data$Treatment, decreasing = TRUE), -c(1)]
 
 # Populate created matrix with ANOVA-generated p-values
 # Returning Partial Eta Squared (PES) effect size since we're using ANOVAs for each given brain region. Note
