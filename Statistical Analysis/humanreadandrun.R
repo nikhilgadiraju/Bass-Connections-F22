@@ -22,7 +22,7 @@ file_list=list.files(path_vol)
 
 # Specify and read ID_Treatment.CSV - this CSV associates contains metadata for all the mice brain
 # data files: Original ID, Modified ID, N-number, Treatment
-path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/ID_Treatment.csv"
+path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/Internally Referenced/ID_Treatment.csv"
 metadata = read.csv(path_metadata)
 
 # *******
@@ -60,11 +60,15 @@ wb_data = data.frame(vol_tab)
 wb_data[,3] = as.numeric(wb_data[,3])
 
 # Conduct and report whole-brain ANOVA
-wb_aov = anova(lm(Volume ~ Treatment, data=wb_data[,c('Treatment','Volume')]))
+wblm = lm(Volume ~ Treatment, data=wb_data[,c('Treatment','Volume')])
+wb_aov = anova(wblm)
 
 # Print TRUE if anova p-value < 0.05
 paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
 
+# Save Whole-brain ANOVA data
+wb_data = wb_data[order(wb_data$Treatment, decreasing = TRUE), ]
+write.csv(wb_data, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Whole Brain/wb_data.csv', row.names = F)
 
 ### BEGIN STATISTICAL ANALYSIS
 # Read voxel volumes w/ treatments excel file
@@ -76,30 +80,24 @@ new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
 
 # remove the first 3 columns (index, filename, ID) and leave treatment and data columns; omit NaNs
-data=data[  , -c(1,2)]
+data=data[  , -c(1,2,3)]
 data=na.omit(data) 
-data_start <- 3
+data_start <- 2
 
 # Convert voxel counts to proportions of total brain volume
 data[,data_start:dim(data)[2]]=100*data[,data_start:dim(data)[2]] 
 
 ## Create blank matrix to represent p values (column) for each brain region (rows)
-colnames_vec = c("Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
+colnames_vec = c("Region Name", "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
                  "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group", 
                  "Uncorrected Pvalue", "FDR corrected Pvalue", "F-value", "Cohen's F Effect Size", "Effect Size Eta^2", 
                  "CI lower bound", "CI upper bound", 
                  "Shapiro-Wilk Pvalue (norm)", "Levene Test Pvalue (homog)")
-# Change '-2' expression based on number of non-numeric columns
-pvalsresults=matrix(NA,(dim(data)[2]-2), length(colnames_vec))
+pvalsresults=matrix(NA,(dim(data)[2]-1), length(colnames_vec))
 rownames(pvalsresults)=names(data)[data_start:dim(data)[2]]
 colnames(pvalsresults)=colnames_vec
 
-# Append whole-brain region to end of data
-data = data[order(data$ID, decreasing = TRUE), ]
-wb_data = wb_data[order(wb_data$ID, decreasing = TRUE), ]
-
-data$Brain <- wb_data$Volume
-data = data[order(data$Treatment, decreasing = TRUE), -c(1)]
+vol_tab <- vol_tab[which(metadata$N.number %in% vol_tab[,'N-number']),]
 
 # Populate created matrix with ANOVA-generated p-values
 # Returning Partial Eta Squared (PES) effect size since we're using ANOVAs for each given brain region. Note
@@ -109,10 +107,15 @@ data = data[order(data$Treatment, decreasing = TRUE), -c(1)]
 
 # Comparison between ANOVA and linear model: 
 # https://stats.libretexts.org/Bookshelves/Applied_Statistics/Book%3A_Learning_Statistics_with_R_-_A_tutorial_for_Psychology_Students_and_other_Beginners_(Navarro)/16%3A_Factorial_ANOVA/16.06%3A_ANOVA_As_a_Linear_Model
+struc_abbrev = read.csv('/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/Internally Referenced/struc_abbrev.csv')
 len = dim(data)[2]
 for (i in 1:(len-1))  {
   # Set 'tempname' to the currently analyzed brain regions
   tempname=rownames(pvalsresults)[i]
+  
+  # Find abbreviation full structure name
+  sa_ind = which(struc_abbrev$Abbreviation == tempname)
+  full_struc = struc_abbrev[sa_ind, 'Structure']
   
   # Create a linear model object using a given brain region and the data associated with the three
   # categories: 'sedentary', 'treadmill', 'wheel_only'. Calculate eta-squared effect size for the overall model 
@@ -138,7 +141,7 @@ for (i in 1:(len-1))  {
   
   # Output calculated values to the 'pvalresults' matrix in the user-defined order; the 'pvalresults' matrix will later
   # be used to create the 'posthoc_group_stats.csv' output
-  val_list = c(means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$`Pr(>F)`[1], aov_table$`Pr(>F)`[1], aov_table$'F value'[1], cf$Cohens_f, eff$Eta2, eff$CI_low, eff$CI_high, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
+  val_list = c(full_struc, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$`Pr(>F)`[1], aov_table$`Pr(>F)`[1], aov_table$'F value'[1], cf$Cohens_f, eff$Eta2, eff$CI_low, eff$CI_high, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
@@ -175,6 +178,11 @@ posthoc[,1]=sig[,8]
 for (i in 1:dim(sig)[1]) {
   # Set 'tempname' to the currently analyzed brain regions
   tempname=rownames(sig)[i]
+  
+  # Find abbreviation full structure name
+  sa_ind = which(struc_abbrev$Abbreviation == tempname)
+  #full_struc = struc_abbrev[sa_ind, 'Structure']
+  #posthoc[,1 = full_struc]
   
   # Conduct ANOVA on currently analyzed brain region and use ANOVA output to conduct post-hoc Tukey test
   res.aov <- aov(get(tempname) ~ Treatment, data = data)
