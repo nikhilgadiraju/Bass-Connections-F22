@@ -47,5 +47,5 @@ id_updated_df = pd.DataFrame({'Original ID': filtered_df['Animal'], 'Modified ID
     filtered_df.iloc[:, 1])})  # Create new dataframe with column 1 = updated IDs, and column 2 = Treatment
 
 # Save dataframe as CSV
-os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files")
-#id_updated_df.to_csv('ID_Treatment.csv', encoding='utf-8')
+os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/Internally Referenced")
+id_updated_df.to_csv('ID_Treatment.csv', encoding='utf-8')
