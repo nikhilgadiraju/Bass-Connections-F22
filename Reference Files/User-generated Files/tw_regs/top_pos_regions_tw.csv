@@ -1,7 +1,7 @@
-Abbreviation,Structure,P-value,Effect Size
-MiTg_L,Microcellular Tegmental Nucleus (L),0.0143,1.54645175145305
-V2MM_L,Secondary Visual Cortex Mediomedial Area (L),0.0377,1.49378010988904
-vhc_L,Ventral Hippocampal Commissure (L),0.00965,1.4837085067467
-PRh_R,Perirhinal Cortex (R),0.0357,1.22259080613906
-CEnt_R,Caudomedial Entorhinal Cortex (R),0.0346,1.21330135158853
-PaS_R,Parasubiculum (R),0.0357,1.20959922367387
+Abbreviation,Structure,P-value,Effect Size,Lower Confidence Interval,Higher Confidence Interval
+MiTg_L,Microcellular Tegmental Nucleus (L),0.0143,1.54645175145305,-0.0182941287310061,-0.0018834736133863
+V2MM_L,Secondary Visual Cortex Mediomedial Area (L),0.0377,1.49378010988904,-0.0483405713944321,-0.0012608506713129
+vhc_L,Ventral Hippocampal Commissure (L),0.00965,1.4837085067467,-0.0009103212814667,-0.000117880822624
+PRh_R,Perirhinal Cortex (R),0.0357,1.22259080613906,-0.0305914519639979,-0.000945764693742
+CEnt_R,Caudomedial Entorhinal Cortex (R),0.0346,1.21330135158853,-0.0686309876402263,-0.0023093382183611
+PaS_R,Parasubiculum (R),0.0357,1.20959922367387,-0.0159514542968046,-0.0004938896082654

@@ -51,6 +51,10 @@ df = df.rename(columns={"ST Comparison Group Effect Size": 'ST',
                'SW Comparison Group Effect Size': 'SW', 'TW Comparison Group Effect Size': 'TW'})
 df = df.rename(columns={"ST Comparison Group Pvalue": 'ST_p',
                'SW Comparison Group Pvalue': 'SW_p', 'TW Comparison Group Pvalue': 'TW_p'})
+df = df.rename(columns={"ST Comparison Group Lower CI": 'ST_lci',
+               'SW Comparison Group Lower CI': 'SW_lci', 'TW Comparison Group Lower CI': 'TW_lci'})
+df = df.rename(columns={"ST Comparison Group Higher CI": 'ST_hci',
+               'SW Comparison Group Higher CI': 'SW_hci', 'TW Comparison Group Higher CI': 'TW_hci'})
 index_df = index.iloc[:, [0, 1, 2, 8]]
 structure_updated = list(map(lambda x, y: structure_update(
     x, y), index_df["Structure"], index_df["Hemisphere"]))
@@ -71,20 +75,25 @@ top_regs_neg = []
 
 comp_groups = ['ST', 'SW', 'TW']
 for comparison in comp_groups:
-    df_iso = df.loc[:, ["Unnamed: 0", "{}_p".format(comparison), comparison]]
+    df_iso = df.loc[:, ["Unnamed: 0", "{}_p".format(
+        comparison), comparison, "{}_lci".format(comparison), "{}_hci".format(comparison)]]
     df_sig = df_iso[df_iso["{}_p".format(comparison)] <= 0.05]
 
     df_pos = df_sig.sort_values(by=[comparison], ascending=False).query(
         "{} >= 0".format(comparison))
     top_pos = pd.DataFrame({'Abbreviation': df_pos.iloc[:, 0], 'Structure': [
-                           name_dict[key] for key in df_pos.iloc[:, 0]], 'P-value': df_pos.loc[:, "{}_p".format(comparison)], 'Effect Size': df_pos.loc[:, comparison]})
+                           name_dict[key] for key in df_pos.iloc[:, 0]], 'P-value': df_pos.loc[:, "{}_p".format(comparison)],
+        'Effect Size': df_pos.loc[:, comparison], 'Lower Confidence Interval': df_pos.loc[:, "{}_lci".format(comparison)],
+        "Higher Confidence Interval": df_pos.loc[:, "{}_hci".format(comparison)]})
     # Append relevant regions based on comparison group to empty top_regs list
     top_regs_pos.append(top_pos)
 
     df_neg = df_sig.sort_values(by=[comparison], ascending=True).query(
         "{} < 0".format(comparison))
     top_neg = pd.DataFrame({'Abbreviation': df_neg.iloc[:, 0], 'Structure': [
-                           name_dict[key] for key in df_neg.iloc[:, 0]], 'P-value': df_neg.loc[:, "{}_p".format(comparison)], 'Effect Size': df_neg.loc[:, comparison]})
+                           name_dict[key] for key in df_neg.iloc[:, 0]], 'P-value': df_neg.loc[:, "{}_p".format(comparison)],
+        'Effect Size': df_neg.loc[:, comparison], 'Lower Confidence Interval': df_neg.loc[:, "{}_lci".format(comparison)],
+        "Higher Confidence Interval": df_neg.loc[:, "{}_hci".format(comparison)]})
     top_regs_neg.append(top_neg)
 
 # Replace naming convention for different treatment groups to more accurately describe exercise conditions
