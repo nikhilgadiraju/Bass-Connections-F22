@@ -18,16 +18,26 @@ TeA_L,Temporal Association Cortex (L),0.0234,1.32908915725588
 Ect_L,Ectorhinal Cortex (L),0.0441,1.32534283514122
 S1Sh_L,Primary Somatosensory Cortex Shoulder Region (L),0.0192,1.32239824468889
 S1FL_L,Primary Somatosensory CortexForelimb Region (L),0.0152,1.31456566038331
-Sp5_L,Spinal Trigeminal Nucleus (L),0.0156,1.18025590581774
+S1_L,Primary Somatosensory Cortex (L),0.0464,1.29995907679701
 PtPR_L,Parietal Cortex Posterior Area Rostral Part (L),0.0082,1.1580360658151
 S1_R,Primary Somatosensory Cortex (R),0.00575,1.14179882100602
 V2MM_R,Secondary Visual Cortex Mediomedial Area (R),0.0172,1.08207359936643
+V1_L,Primary Visual Cortex (L),0.0273,1.0760428897771
+PLCo_L,Posterolateral Cortical Amygdaloid Area (L),0.0386,1.05283537979321
 V2L_R,Secondary Visual CortexLateral Area (R),0.00753,1.02897277579373
 V1B_R,Primary Visual Cortex Binocular Area (R),0.0117,1.00505754443146
+V1M_L,Primary Visual Cortex Monocular Area (L),0.0202,1.0010414511566
+VIEnt_L,Ventral Intermediate Entorhinal Cortex (L),0.0229,0.997263183932821
 DIEnt_L,Dorsal Intermediate Entorhinal Cortex (L),0.0137,0.983890288450371
 MPtA_L,Medial Parietal Association Cortex (L),0.00537,0.963102758616111
+MEnt_L,Medial Entorhinal Cortex (L),0.0401,0.762773807926513
+TeA_R,Temporal Association Cortex (R),0.0213,0.732737987625465
+Au1_R,Primary Auditory Cortex (R),0.0345,0.728178847777797
 V2MM_L,Secondary Visual Cortex Mediomedial Area (L),0.00132,0.672482067173327
 PaS_R,Parasubiculum (R),0.000816,0.659403510034084
+AuV_R,Secondary Auditory Cortex Ventral Part (R),0.0497,0.644281218301062
 Ect_R,Ectorhinal Cortex (R),0.00413,0.509921321645026
 Post_L,Postsubiculum (L),0.0474,0.324823008648592
+A24bPrime_L,Cingulate Cortex Area 24b prime (L),0.0365,0.305290616168812
 PRh_R,Perirhinal Cortex (R),0.00794,0.288798638077555
+cg_R,Cingulum (R),0.0487,0.0839479064737305

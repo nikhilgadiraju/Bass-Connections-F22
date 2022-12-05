@@ -15,8 +15,12 @@ DLEnt_R,Dorsolateral Entorhinal Cortex (R),0.00449,1.42528580553565
 S1Sh_L,Primary Somatosensory Cortex Shoulder Region (L),0.0302,1.32408836973921
 TeA_L,Temporal Association Cortex (L),0.0136,1.30855148287034
 sc_R,Spinocerebellar Tract (R),0.00159,1.28534064142733
+PLCo_L,Posterolateral Cortical Amygdaloid Area (L),0.0467,1.13698395322683
 Ect_L,Ectorhinal Cortex (L),0.0296,1.10116580287676
 Au1_L,Primary Auditory Cortex (L),0.00526,1.09373513511269
 PLCo_R,Posterolateral Cortical Amygdaloid Area (R),0.00529,1.07721156446132
 sc_L,Spinocerebellar Tract (L),0.012,0.780952429863353
+S2_L,Secondary Somatosensory Cortex (L),0.0209,0.773470699610838
+Post_R,Postsubiculum (R),0.0326,0.501747225853391
+AuD_L,Secondary Auditory Cortex Dorsal Part (L),0.0447,0.455508887054002
 MiTg_L,Microcellular Tegmental Nucleus (L),0.02,0.112777387726983

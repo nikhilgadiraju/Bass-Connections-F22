@@ -89,6 +89,15 @@ old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
 new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
 
+
+# remove the first 3 columns (index, filename, ID) and leave treatment and data columns; omit NaNs
+data=na.omit(data) 
+data_start = 5
+dim(data)
+
+# Convert voxel counts to proportions of total brain volume
+data[,data_start:dim(data)[2]]=100*data[,data_start:dim(data)[2]]
+
 # Add Whole-brain data to conduct full analysis
 wb_vec = matrix(NA,length(data$ID),2)
 for (i in 1:length(data$ID)) {
@@ -97,16 +106,11 @@ for (i in 1:length(data$ID)) {
   wb_vec[i, 2] = vol_tab[val, 'Volume']
 }
 colnames(wb_vec) = c('ID', 'Volume')
-data$Brain <- wb_vec[,'Volume']
-
-
-# remove the first 3 columns (index, filename, ID) and leave treatment and data columns; omit NaNs
-data=data[  , -c(1,2,3)]
+data$Brain <- as.numeric(wb_vec[,'Volume'])
 dim(data)
-data=na.omit(data) 
 
-# Convert voxel counts to proportions of total brain volume
-data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]] 
+# Remove first few columns
+data=data[  , -c(1,2,3)]
 
 ## Create blank matrix to represent p values (column) for each brain region (rows)
 colnames_vec = c("Full Structure", "Region ID", "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
@@ -115,10 +119,8 @@ colnames_vec = c("Full Structure", "Region ID", "Mean sedentary group", "Mean vo
                  "CI lower bound", "CI upper bound", 
                  "Shapiro-Wilk Pvalue (norm)", "Levene Test Pvalue (homog)")
 pvalsresults=matrix(NA,(dim(data)[2]-1), length(colnames_vec))
-rownames(pvalsresults)=names(data)[data_start:dim(data)[2]]
+rownames(pvalsresults)=names(data)[2:dim(data)[2]]
 colnames(pvalsresults)=colnames_vec
-
-vol_tab <- vol_tab[which(metadata$N.number %in% vol_tab[,'N-number']),]
 
 # Populate created matrix with ANOVA-generated p-values
 # Returning Partial Eta Squared (PES) effect size since we're using ANOVAs for each given brain region. Note
