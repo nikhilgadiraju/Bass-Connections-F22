@@ -51,17 +51,18 @@ df = df.rename(columns={"ST Comparison Group Effect Size": 'ST',
                'SW Comparison Group Effect Size': 'SW', 'TW Comparison Group Effect Size': 'TW'})
 df = df.rename(columns={"ST Comparison Group Pvalue": 'ST_p',
                'SW Comparison Group Pvalue': 'SW_p', 'TW Comparison Group Pvalue': 'TW_p'})
-index_df = index.iloc[:, 0:3]
+index_df = index.iloc[:, [0, 1, 2, 8]]
 structure_updated = list(map(lambda x, y: structure_update(
     x, y), index_df["Structure"], index_df["Hemisphere"]))
 abbreviation_updated = list(map(lambda x, y: abbreviation_update(
     x, y), index_df["Abbreviation"], index_df["Hemisphere"]))
 name_dict = {abbreviation_updated[i]: structure_updated[i]
              for i in range(len(abbreviation_updated))}
+index_dict = list(index_df["index"])
 
 # Output Structure-Abbreviation CSV
 os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/Internally Referenced")
-pd.DataFrame(data={'Structure': structure_updated, 'Abbreviation': abbreviation_updated}).to_csv(
+pd.DataFrame(data={'Structure': structure_updated, 'Abbreviation': abbreviation_updated, "Index": index_dict}).to_csv(
     "struc_abbrev.csv", encoding='utf-8', mode='w', index=False)
 
 # Sort through posthoc_standard.csv to identify relevant regions for each comparison group based on corrected p-value

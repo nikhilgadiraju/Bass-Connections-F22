@@ -44,11 +44,11 @@ for (i in 1:length(file_list)) {
 
 # Set column names and filter vol_tab to only display CVN mice we are analyzing (by N-numbers)
 colnames(vol_tab) <- c('ID', 'N-number', 'Volume')
-vol_tab <- vol_tab[which(metadata$N.number %in% vol_tab[,'N-number']),]
+vol_tab <- vol_tab[which(vol_tab[,'N-number'] %in% metadata$N.number),]
 
 # Replace N-numbers with each dataset's treatment condition for downstream ANOVA
 for (g in 1:length(vol_tab[,'N-number'])) {
-  treat_row = which(metadata$N.number == metadata$N.number[g])
+  treat_row = which(vol_tab[,'N-number'][g] == metadata$N.number)
   vol_tab[,'N-number'][g] = metadata$Treatment[treat_row]
   vol_tab[,'ID'][g] = metadata$Modified.ID[treat_row]
 }
@@ -70,6 +70,16 @@ paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
 wb_data = wb_data[order(wb_data$Treatment, decreasing = TRUE), ]
 write.csv(wb_data, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Whole Brain/wb_data.csv', row.names = F)
 
+# Whole Brain Post-hoc Analysis
+# Conduct post-hoc analysis and add to table AFTER ,0.05 and FDR correction
+# Table 1
+# Region -> Side of Brain -> Abbreviation -> index -> (3) Mean for each group -> (3) stedev for each group -> 
+# FDR Corrected P-value -> F-value -> Eta-squared -> CI's
+# Table 2
+# Treatment -> T-ratio -> Uncorrected P-value -> Mean -> Standard Deviation -> Cohen Effect Size -> CI
+
+
+
 ### BEGIN STATISTICAL ANALYSIS
 # Read voxel volumes w/ treatments excel file
 data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
@@ -79,16 +89,27 @@ old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
 new_colnames = sub('.','',old_colnames)
 colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
 
+# Add Whole-brain data to conduct full analysis
+wb_vec = matrix(NA,length(data$ID),2)
+for (i in 1:length(data$ID)) {
+  val = which(data$ID[i] == vol_tab)
+  wb_vec[i, 1] = data$ID[i]
+  wb_vec[i, 2] = vol_tab[val, 'Volume']
+}
+colnames(wb_vec) = c('ID', 'Volume')
+data$Brain <- wb_vec[,'Volume']
+
+
 # remove the first 3 columns (index, filename, ID) and leave treatment and data columns; omit NaNs
 data=data[  , -c(1,2,3)]
+dim(data)
 data=na.omit(data) 
-data_start <- 2
 
 # Convert voxel counts to proportions of total brain volume
-data[,data_start:dim(data)[2]]=100*data[,data_start:dim(data)[2]] 
+data[,2:dim(data)[2]]=100*data[,2:dim(data)[2]] 
 
 ## Create blank matrix to represent p values (column) for each brain region (rows)
-colnames_vec = c("Region Name", "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
+colnames_vec = c("Full Structure", "Region ID", "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
                  "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group", 
                  "Uncorrected Pvalue", "FDR corrected Pvalue", "F-value", "Cohen's F Effect Size", "Effect Size Eta^2", 
                  "CI lower bound", "CI upper bound", 
@@ -116,7 +137,8 @@ for (i in 1:(len-1))  {
   # Find abbreviation full structure name
   sa_ind = which(struc_abbrev$Abbreviation == tempname)
   full_struc = struc_abbrev[sa_ind, 'Structure']
-  
+  reg_ind = struc_abbrev[sa_ind, "Index"]
+
   # Create a linear model object using a given brain region and the data associated with the three
   # categories: 'sedentary', 'treadmill', 'wheel_only'. Calculate eta-squared effect size for the overall model 
   mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
@@ -141,7 +163,7 @@ for (i in 1:(len-1))  {
   
   # Output calculated values to the 'pvalresults' matrix in the user-defined order; the 'pvalresults' matrix will later
   # be used to create the 'posthoc_group_stats.csv' output
-  val_list = c(full_struc, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$`Pr(>F)`[1], aov_table$`Pr(>F)`[1], aov_table$'F value'[1], cf$Cohens_f, eff$Eta2, eff$CI_low, eff$CI_high, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
+  val_list = c(full_struc, reg_ind, means[1], means[2], means[3], sds[1], sds[2], sds[3], aov_table$`Pr(>F)`[1], aov_table$`Pr(>F)`[1], aov_table$'F value'[1], cf$Cohens_f, eff$Eta2, eff$CI_low, eff$CI_high, normality$p.value, homogeneity$`Pr(>F)`[1]) #normality$p.value>0.05, homogeneity$`Pr(>F)`[1]>0.05
   for (j in seq_along(val_list)){
     pvalsresults[i,j] <- val_list[j]
   }
@@ -167,6 +189,7 @@ sig = pvalsresultsadjusted[pvalsresultsadjusted[,8]<=0.05 &
                            pvalsresultsadjusted[,ncol(pvalsresultsadjusted)-1]>0.05,] # For Shapiro-Wilk Test
 sig = as.data.frame(sig)
 sig <- sig[order(sig$`Cohen's F Effect Size`, decreasing = TRUE),]
+
 
 # Create empty 'posthoc' matrix to eventually populate with all gruop comparison data; 
 # Set first 'posthoc' column equal to 8th column of 'sig' matrix (FDR-corrected P-value column)
