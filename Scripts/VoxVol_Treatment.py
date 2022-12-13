@@ -11,6 +11,8 @@ import os
 
 # %% FUNCTION DEFINITIONS
 # Create function to convert Animal IDs from index.csv (Atlas) to those utilized in the output voxelvolumes.csv
+
+
 def normFileNames(old_filename):
     if ":" in old_filename:
         old_filename_split = old_filename[:-2].split("_")
@@ -22,20 +24,29 @@ def normFileNames(old_filename):
         new_filename = "0".join(old_filename_split)
     return "A" + new_filename + "_T1"
 
+
 # %% DATA IMPORTS
 # FILE: voxelvolumes.csv
-vox_vol_data = pd.read_csv("/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv")
+vox_vol_data = pd.read_csv(
+    "/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv")
 # FILE: QCLAB_AD_mice011222.csv
-treatment_data = pd.read_csv("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/Absolute Files/QCLAB_AD_mice011222.csv")
+treatment_data = pd.read_csv(
+    "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/Absolute Files/QCLAB_AD_mice011222.csv")
 
 # %% DATA PROCESSING
 
-id_treatment_df = treatment_data[["Animal", "Treatment", 'DWI']] # Isolate Animal ID and Treatment columns
-filtered_df = id_treatment_df[id_treatment_df["Treatment"].isin(['sedentary','wheel_only','treadmill'])] # Filter to include animal IDs that have the 3 specified treatments
+# Isolate Animal ID and Treatment columns
+id_treatment_df = treatment_data[["Animal", "Treatment", 'DWI']]
+# Filter to include animal IDs that have the 3 specified treatments
+filtered_df = id_treatment_df[id_treatment_df["Treatment"].isin(
+    ['sedentary', 'wheel_only', 'treadmill'])]
 
-id_updated = list(map(lambda x: normFileNames(x), filtered_df['Animal'])) # Create list of updated IDs
-id_updated_df = pd.DataFrame({'Original ID': filtered_df['Animal'], 'Modified ID': id_updated, 'N-number': filtered_df["DWI"], 'Treatment': list(filtered_df.iloc[:,1])}) # Create new dataframe with column 1 = updated IDs, and column 2 = Treatment
+# Create list of updated IDs
+id_updated = list(map(lambda x: normFileNames(x), filtered_df['Animal']))
+print(id_updated)
+id_updated_df = pd.DataFrame({'Original ID': filtered_df['Animal'], 'Modified ID': id_updated, 'N-number': filtered_df["DWI"], 'Treatment': list(
+    filtered_df.iloc[:, 1])})  # Create new dataframe with column 1 = updated IDs, and column 2 = Treatment
 
 # Save dataframe as CSV
-os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files")
-id_updated_df.to_csv('ID_Treatment.csv', encoding='utf-8')
+# os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/Internally Referenced")
+# id_updated_df.to_csv('ID_Treatment.csv', encoding='utf-8')

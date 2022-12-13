@@ -23,17 +23,20 @@ fpath_main = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Yea
 fpath_dat_main = "/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections"
 
 # INPUT file paths
-fpath_dat = fpath_dat_main + "/Data/CVN_T1_Skullstripped_Labels"  # Location of all data (Volumes AND Labels)
-fpath_norm_csv = fpath_main + "/Reference Files/User-generated Files/normVals.csv"
+# Location of all data (Volumes AND Labels)
+fpath_dat = fpath_dat_main + "/Data/CVN_T1_Skullstripped_Labels"
+fpath_norm_csv = fpath_main + "/Reference Files/Absolute Files/normVals.csv"
 fpath_atlas_csv = fpath_main + "/Reference Files/Absolute Files"
 fpath_id_treatment_csv = fpath_main + "/Reference Files/User-generated Files"
 
 # OUTPUT file paths
 fpath_norm = fpath_dat_main + "/Processed Data/Water Tube-Normalized Brain Volumes"
-fpath_bfc_img = fpath_dat_main + "/Processed Data/Bias Field Corrected (BFC) Brain Volumes"
+fpath_bfc_img = fpath_dat_main + \
+    "/Processed Data/Bias Field Corrected (BFC) Brain Volumes"
 fpath_bfield = fpath_dat_main + "/Processed Data/BFC Bias Fields"
 fpath_reg_csv = fpath_dat_main + "/Processed Data/Regional Data CSVs"
-fpath_meanint_voxvol_csv = fpath_dat_main + "/Processed Data/Mean Intensity & Voxel Volumes"
+fpath_meanint_voxvol_csv = fpath_dat_main + \
+    "/Processed Data/Mean Intensity & Voxel Volumes"
 
 # %% Read input files
 # Save all brain volume and their associated label files' names into a list
@@ -113,7 +116,8 @@ for x in data_lab_dict:
 
     # Normalizing brain volume data
     data = img.get_fdata()
-    data = np.multiply(data, np.multiply(np.ones(data.shape), data_lab_dict[x][1]))
+    data = np.multiply(data, np.multiply(
+        np.ones(data.shape), data_lab_dict[x][1]))
 
     # Save normalized brain volumes to below folder
     newname = x[0:-7] + '_norm' + '.nii.gz'
@@ -139,15 +143,20 @@ for x in filenames:
     datf = []
 
     for k in range(0, len(abbreviation) - 1):
-        reg_mask = np.array((np.ma.array(lab.get_fdata()) == atlas.get(abb_updated[k])) * 1)  # Region Mask
-        reg_iso = np.multiply(np.array(corrected_image), reg_mask)  # Isolated Region (image)
-        mean_val = np.sum(reg_iso) / np.count_nonzero(reg_mask)  # Mean intensity value
+        reg_mask = np.array((np.ma.array(lab.get_fdata()) ==
+                            atlas.get(abb_updated[k])) * 1)  # Region Mask
+        reg_iso = np.multiply(np.array(corrected_image),
+                              reg_mask)  # Isolated Region (image)
+        # Mean intensity value
+        mean_val = np.sum(reg_iso) / np.count_nonzero(reg_mask)
 
         # For whole-brain proportions, change 'np.count_nonzero(reg_mask)' to 'np.count_nonzero(reg_mask)/np.count_nonzero(corrected_image)' and re-run code
-        val_arr = [abb_updated[k], atlas.get(abb_updated[k]), np.count_nonzero(reg_mask)/np.count_nonzero(corrected_image), mean_val]
+        val_arr = [abb_updated[k], atlas.get(abb_updated[k]), np.count_nonzero(
+            reg_mask)/np.count_nonzero(corrected_image), mean_val]
         datf.append(val_arr)
 
-    reg_df = pd.DataFrame(datf, columns=['Structure Abbreviation', 'Index', 'Voxel Number', 'Mean intensity'])
+    reg_df = pd.DataFrame(datf, columns=[
+                          'Structure Abbreviation', 'Index', 'Voxel Number', 'Mean intensity'])
 
     # Save CSV indicating regional mean values for each brain
     newname = x[0:-22] + '_df' + '.csv'
@@ -166,7 +175,8 @@ for x in data_lab_dict:
     csv_name = x[0:-7] + '_df' + '.csv'
 
     df = pd.read_csv(csv_name)
-    regs_abbrev = list(df.iloc[:, df.columns.get_loc('Structure Abbreviation')].copy())
+    regs_abbrev = list(
+        df.iloc[:, df.columns.get_loc('Structure Abbreviation')].copy())
     vox_vol = list(df.iloc[:, df.columns.get_loc('Voxel Number')].copy())
     mean_int = list(df.iloc[:, df.columns.get_loc('Mean intensity')].copy())
 
@@ -221,7 +231,8 @@ for x in data_lab_dict:
     csv_name = x[0:-7] + '_df' + '.csv'
 
     df = pd.read_csv(csv_name)
-    regs_abbrev = list(df.iloc[:, df.columns.get_loc('Structure Abbreviation')].copy())
+    regs_abbrev = list(
+        df.iloc[:, df.columns.get_loc('Structure Abbreviation')].copy())
     vox_vol = list(df.iloc[:, df.columns.get_loc('Voxel Number')].copy())
     mean_int = list(df.iloc[:, df.columns.get_loc('Mean intensity')].copy())
 
@@ -254,7 +265,8 @@ for x in data_lab_dict:
     rowarr_mi = [x, x[0:-7]]
 
     for k in range(0, len(regs_abbrev)):
-        reg_vals = list(out_df_mi.iloc[:, out_df_mi.columns.get_loc(regs_abbrev[k])].copy())
+        reg_vals = list(
+            out_df_mi.iloc[:, out_df_mi.columns.get_loc(regs_abbrev[k])].copy())
 
         # Accounting for Partial NaN columns
         reg_mask = list(np.isnan(reg_vals))
@@ -283,12 +295,14 @@ for x in data_lab_dict:
     output_mi.append(rowarr_mi)
 
 cols = product(regs_abbrev, ['Mean_int', 'Z-score'])
-columnsarr = pd.MultiIndex.from_tuples([('Filename', ''), ('ID', '')] + list(cols))
+columnsarr = pd.MultiIndex.from_tuples(
+    [('Filename', ''), ('ID', '')] + list(cols))
 
 # Adding treatment column
 id_treatment = id_updated_df
 treatment_dict = id_treatment.set_index('Modified ID')["Treatment"].to_dict()
-id_vv = pd.Series(out_df_vv.loc[:,"Modified ID"])
+id_vv = pd.Series(out_df_vv.loc[:, "Modified ID"])
+
 
 def treatment_match(input_id):
     if str(input_id) in list(treatment_dict.keys()):
@@ -298,9 +312,10 @@ def treatment_match(input_id):
     else:
         return None
 
+
 treatment_map = list(map(lambda x: treatment_match(x), id_vv))
 treatment_align_df = pd.DataFrame({'ID': id_vv, 'Treatment': treatment_map})
-out_df_vv.insert(2, 'Treatment', list(treatment_align_df.iloc[:,1]))
+out_df_vv.insert(2, 'Treatment', list(treatment_align_df.iloc[:, 1]))
 out_df_vv = out_df_vv.sort_values(by=['Treatment'], ascending=False)
 
 os.chdir(fpath_meanint_voxvol_csv)
