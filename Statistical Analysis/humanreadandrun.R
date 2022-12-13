@@ -195,8 +195,8 @@ sig <- sig[order(sig$`Cohen's F Effect Size`, decreasing = TRUE),]
 
 # Create empty 'posthoc' matrix to eventually populate with all gruop comparison data; 
 # Set first 'posthoc' column equal to 8th column of 'sig' matrix (FDR-corrected P-value column)
-posthoc = matrix(NA,dim(sig)[1],13)
-posthoc[,1]=sig[,8]
+posthoc = matrix(NA,dim(sig)[1],22)
+posthoc[,1]=sig[,"FDR corrected Pvalue"]
 
 # Loop through each significant (FDR-corrected p-value < 0.05) brain region (from 'sig' matrix) and conduct 
 # a Tukey test and report p-values for each comparison group
@@ -206,12 +206,18 @@ for (i in 1:dim(sig)[1]) {
   
   # Find abbreviation full structure name
   sa_ind = which(struc_abbrev$Abbreviation == tempname)
-  #full_struc = struc_abbrev[sa_ind, 'Structure']
+  full_struc = struc_abbrev[sa_ind, 'Structure']
+  reg_ind = struc_abbrev[sa_ind, "Index"]
   #posthoc[,1 = full_struc]
   
   # Conduct ANOVA on currently analyzed brain region and use ANOVA output to conduct post-hoc Tukey test
-  res.aov <- aov(get(tempname) ~ Treatment, data = data)
-  tuk=tukey_hsd(res.aov)
+  mylm <- lm(get(tempname) ~ as.factor(Treatment), data=data) 
+  # anova(mylm)
+  tuk=emmeans(mylm, list(pairwise ~ as.factor(Treatment)), adjust="tukey")
+  
+  # Get mean/stdev columns
+  means = as.numeric(sig[tempname, c("Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group")])
+  sds = as.numeric(sig[tempname, c("SD sedentary group", "SD voluntary group", "SD voluntary + enforced group")])
   
   # Define Tukey comparison groups for calculating hedge's G effect size. Note that these groups are mannually
   # set so that effect sizes can correlate with changes in regional volumes (e.g. negative effect size correlates
@@ -222,18 +228,24 @@ for (i in 1:dim(sig)[1]) {
   # For given brain region, loop through comparison groups and calculate hedge's g for each comparison groups
   for (j in 1:length(control)){
     hedges_out = hedges_g(get(tempname) ~ factor(Treatment, levels=c(control[j], treatment[j])), data=data)
-    posthoc[i,j+4]=hedges_out$Hedges_g #Go through columns 5, 6, 7
+    posthoc[i,j+13]=hedges_out$Hedges_g #Go through columns 5, 6, 7
   }
   
   # Add adjusted P-value and add low and high confidence intervals to 'posthoc' matrix
-  posthoc[i,2:4]=tuk$p.adj
-  posthoc[i,c(8,10,12)] = tuk$conf.low
-  posthoc[i,c(9,11,13)] = tuk$conf.high
+  posthoc[i,2:4]=summary(tuk$`pairwise differences of Treatment`)$p.value
+  posthoc[i, 5:7]=summary(tuk$`pairwise differences of Treatment`)$t.ratio
+  posthoc[i, 8:10]=means
+  posthoc[i, 11:13]=sds
+  posthoc[i,c(17,19,21)] = summary(tuk$`emmeans of Treatment`)$lower.CL
+  posthoc[i,c(18,20,22)] = summary(tuk$`emmeans of Treatment`)$upper.CL
 }
 
 # Define output CSV column and row names
-colnames(posthoc)=c(colnames(sig)[8],"ST Comparison Group Pvalue","SW Comparison Group Pvalue","TW Comparison Group Pvalue",
-                    "ST Comparison Group Effect Size","SW Comparison Group Effect Size","TW Comparison Group Effect Size",
+colnames(posthoc)=c("FDR corrected Pvalue","SW Comparison Group Pvalue","ST Comparison Group Pvalue","TW Comparison Group Pvalue",
+                    "SW Comparison Group Tratio","ST Comparison Group Tratio","TW Comparison Group Tratio",
+                    "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
+                    "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group",
+                    "SW Comparison Group Effect Size","ST Comparison Group Effect Size","TW Comparison Group Effect Size",
                     "ST Comparison Group Lower CI", "ST Comparison Group Higher CI", "SW Comparison Group Lower CI", "SW Comparison Group Higher CI", 
                     "TW Comparison Group Lower CI", "TW Comparison Group Higher CI")
 rownames(posthoc)=rownames(sig)

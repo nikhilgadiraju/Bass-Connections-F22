@@ -63,6 +63,7 @@ abbreviation_updated = list(map(lambda x, y: abbreviation_update(
 name_dict = {abbreviation_updated[i]: structure_updated[i]
              for i in range(len(abbreviation_updated))}
 index_dict = list(index_df["index"])
+mean_dict = {"S": "sedentary", "W": "voluntary", "T": "voluntary + enforced"}
 
 # Output Structure-Abbreviation CSV
 os.chdir("/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/Internally Referenced")
@@ -76,13 +77,18 @@ top_regs_neg = []
 comp_groups = ['ST', 'SW', 'TW']
 for comparison in comp_groups:
     df_iso = df.loc[:, ["Unnamed: 0", "{}_p".format(
-        comparison), comparison, "{}_lci".format(comparison), "{}_hci".format(comparison)]]
+        comparison), comparison, "{}_lci".format(comparison), "{}_hci".format(comparison), "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
+        "SD sedentary group", "SD voluntary group", "SD voluntary + enforced group"]]
     df_sig = df_iso[df_iso["{}_p".format(comparison)] <= 0.05]
 
     df_pos = df_sig.sort_values(by=[comparison], ascending=False).query(
         "{} >= 0".format(comparison))
     top_pos = pd.DataFrame({'Abbreviation': df_pos.iloc[:, 0], 'Structure': [
-                           name_dict[key] for key in df_pos.iloc[:, 0]], 'P-value': df_pos.loc[:, "{}_p".format(comparison)],
+                           name_dict[key] for key in df_pos.iloc[:, 0]], 'Mean Volume ({})'.format(mean_dict[comparison[0]].capitalize()): df_pos.loc[:, "Mean {} group".format(mean_dict[comparison[0]])],
+        'Mean Volume ({})'.format(mean_dict[comparison[1]].capitalize()): df_pos.loc[:, "Mean {} group".format(mean_dict[comparison[1]])],
+        'SD ({})'.format(mean_dict[comparison[0]].capitalize()): df_pos.loc[:, "SD {} group".format(mean_dict[comparison[0]])],
+        'SD ({})'.format(mean_dict[comparison[1]].capitalize()): df_pos.loc[:, "SD {} group".format(mean_dict[comparison[1]])],
+        'P-value': df_pos.loc[:, "{}_p".format(comparison)],
         'Effect Size': df_pos.loc[:, comparison], 'Lower Confidence Interval': df_pos.loc[:, "{}_lci".format(comparison)],
         "Higher Confidence Interval": df_pos.loc[:, "{}_hci".format(comparison)]})
     # Append relevant regions based on comparison group to empty top_regs list
@@ -91,7 +97,11 @@ for comparison in comp_groups:
     df_neg = df_sig.sort_values(by=[comparison], ascending=True).query(
         "{} < 0".format(comparison))
     top_neg = pd.DataFrame({'Abbreviation': df_neg.iloc[:, 0], 'Structure': [
-                           name_dict[key] for key in df_neg.iloc[:, 0]], 'P-value': df_neg.loc[:, "{}_p".format(comparison)],
+                           name_dict[key] for key in df_neg.iloc[:, 0]], 'Mean Volume ({})'.format(mean_dict[comparison[0]].capitalize()): df_neg.loc[:, "Mean {} group".format(mean_dict[comparison[0]])],
+        'Mean Volume ({})'.format(mean_dict[comparison[1]].capitalize()): df_neg.loc[:, "Mean {} group".format(mean_dict[comparison[1]])],
+        'SD ({})'.format(mean_dict[comparison[0]].capitalize()): df_neg.loc[:, "SD {} group".format(mean_dict[comparison[0]])],
+        'SD ({})'.format(mean_dict[comparison[1]].capitalize()): df_neg.loc[:, "SD {} group".format(mean_dict[comparison[1]])],
+        'P-value': df_neg.loc[:, "{}_p".format(comparison)],
         'Effect Size': df_neg.loc[:, comparison], 'Lower Confidence Interval': df_neg.loc[:, "{}_lci".format(comparison)],
         "Higher Confidence Interval": df_neg.loc[:, "{}_hci".format(comparison)]})
     top_regs_neg.append(top_neg)
