@@ -15,102 +15,35 @@ library(stringr)
 library(cowplot)
 library(ggpubr)
 
-### WHOLE BRAIN ANALYSIS
-# Specify and read folder with all of Nariman's data (individual_label_statistics/)
-path_vol="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
-file_list=list.files(path_vol)
 
-# Specify and read ID_Treatment.CSV - this CSV associates contains metadata for all the mice brain
-# data files: Original ID, Modified ID, N-number, Treatment
+### FA ANALYSIS
+path_fa="/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Data/individual_label_statistics/"
+file_list=list.files(path_fa)
+
 path_metadata = "/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Reference Files/User-generated Files/Internally Referenced/ID_Treatment.csv"
 metadata = read.csv(path_metadata)
 
-# *******
-# Remove 'A19120503_T1' ID dataset since we don't have that file
-metadata = metadata[!(metadata$Modified.ID=='A19120503_T1'),]
-# *******
+temp = read.delim(paste0(path_fa,file_list[1]))
+len=length(temp$fa_mean)
+fa_tab = matrix(NA,length(file_list),len)
 
-# Create empty matrix to hold total brain volume for each brain dataset
-temp=read.delim( paste0(path_vol,file_list[1]) )
-len=length(temp$volume_mm3)
-vol_tab = matrix(NA,length(file_list),3)
-
-# Populate matrix with brain dataset filename and total volume (mm3)
 for (i in 1:length(file_list)) {
-  temp=read.delim(paste0(path_vol,file_list[i]))
-  vol_tab[i,3]=sum(temp$volume_mm3[2:len])
-  vol_tab[i,2]=substr(file_list[i], 1, 6)
+  temp=read.delim(paste0(path_fa,file_list[i]))
+  fa_tab[i,2:len]=as.numeric(temp$fa_mean[2:len])
+  fa_tab[i,1]=substr(file_list[i], 1, 6)
 }
 
-# Set column names and filter vol_tab to only display CVN mice we are analyzing (by N-numbers)
-colnames(vol_tab) <- c('ID', 'N-number', 'Volume')
-vol_tab <- vol_tab[which(vol_tab[,'N-number'] %in% metadata$N.number),]
+colnames(fa_tab) <- c('N-number',head(index[,'Abbreviation'], -1))
+fa_tab <- fa_tab[which(metadata$N.number %in% fa_tab[,'N-number']),]
 
-# Replace N-numbers with each dataset's treatment condition for downstream ANOVA
-for (g in 1:length(vol_tab[,'N-number'])) {
-  treat_row = which(vol_tab[,'N-number'][g] == metadata$N.number)
-  vol_tab[,'N-number'][g] = metadata$Treatment[treat_row]
-  vol_tab[,'ID'][g] = metadata$Modified.ID[treat_row]
+for (g in 1:length(fa_tab[,'N-number'])) {
+  treat_row = which(metadata$N.number == metadata$N.number[g])
+  fa_tab[,'N-number'][g] = metadata$Treatment[treat_row]
 }
+colnames(fa_tab)[1] = 'Treatment'
+data = data.frame(fa_tab)
+data[,2:len] = apply(data[,2:len], 2, function(x) as.numeric(x)) # Convert data columns from character to numeric using 'apply'
 
-# Rename 'N-number' column title with 'Treatment' column title; also convert volume column
-# to a numeric column type
-colnames(vol_tab)[2] = 'Treatment'
-wb_data = data.frame(vol_tab)
-wb_data[,3] = as.numeric(wb_data[,3])
-
-# Conduct and report whole-brain ANOVA
-wblm = lm(Volume ~ Treatment, data=wb_data[,c('Treatment','Volume')])
-wb_aov = anova(wblm)
-
-# Print TRUE if anova p-value < 0.05
-paste('Whole-brain ANOVA result:',(wb_aov$`Pr(>F)` < 0.05)[1])
-
-# Save Whole-brain ANOVA data
-wb_data = wb_data[order(wb_data$Treatment, decreasing = TRUE), ]
-write.csv(wb_data, '/Volumes/GoogleDrive/My Drive/Education School/Duke University/Year 4 (2022-2023)/Courses/Semester 1/BME 493 (Badea Independent Study)/Bass-Connections-F22/Statistical Analysis/Whole Brain/wb_data.csv', row.names = F)
-
-# Whole Brain Post-hoc Analysis
-# Conduct post-hoc analysis and add to table AFTER ,0.05 and FDR correction
-# Table 1
-# Region -> Side of Brain -> Abbreviation -> index -> (3) Mean for each group -> (3) stedev for each group -> 
-# FDR Corrected P-value -> F-value -> Eta-squared -> CI's
-# Table 2
-# Treatment -> T-ratio -> Uncorrected P-value -> Mean -> Standard Deviation -> Cohen Effect Size -> CI
-
-
-
-### BEGIN STATISTICAL ANALYSIS
-# Read voxel volumes w/ treatments excel file
-data=read.csv('/Users/nikhilgadiraju/Box Sync/Home Folder nvg6/Sharing/Bass Connections/Processed Data/Mean Intensity & Voxel Volumes/voxelvolumes.csv')
-
-# Replace appended "X" to region names due to read.csv wrapper
-old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
-new_colnames = sub('.','',old_colnames)
-colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
-
-
-# remove the first 3 columns (index, filename, ID) and leave treatment and data columns; omit NaNs
-data=na.omit(data) 
-data_start = 5
-dim(data)
-
-# Convert voxel counts to proportions of total brain volume
-data[,data_start:dim(data)[2]]=100*data[,data_start:dim(data)[2]]
-
-# Add Whole-brain data to conduct full analysis
-wb_vec = matrix(NA,length(data$ID),2)
-for (i in 1:length(data$ID)) {
-  val = which(data$ID[i] == vol_tab)
-  wb_vec[i, 1] = data$ID[i]
-  wb_vec[i, 2] = vol_tab[val, 'Volume']
-}
-colnames(wb_vec) = c('ID', 'Volume')
-data$Brain <- as.numeric(wb_vec[,'Volume'])
-dim(data)
-
-# Remove first few columns
-data=data[  , -c(1,2,3)]
 
 ## Create blank matrix to represent p values (column) for each brain region (rows)
 colnames_vec = c("Full Structure", "Region ID", "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
@@ -135,6 +68,7 @@ len = dim(data)[2]
 for (i in 1:(len-1))  {
   # Set 'tempname' to the currently analyzed brain regions
   tempname=rownames(pvalsresults)[i]
+  print(tempname)
   
   # Find abbreviation full structure name
   sa_ind = which(struc_abbrev$Abbreviation == tempname)
