@@ -318,7 +318,7 @@ Dorsal_Acustic_Stria,das,Right,4_white_matter_tracts,pontine_hindbrain,axial_hin
 Postsubiculum,Post,Right,1_forebrain,1_secondary_prosencephalon,3_medial_pallium,6_medial_pallium,2_pallium,317,1151,0,2_pallium
 Ventricular_System_4thVentricle,4V,Right,5_ventricular_system,hindbrain,hindbrain_CSF,cerebrospinal_fluid,8_CSF,318,1152,0,8_CSF
 Microcellular_Tegmental_Nucleus,MiTg,Right,3_hindbrain,1_prepontine_hindbrain,isthmus,3_pontomedullary_hindbrain,6_hindbrain,319,1153,0,6_hindbrain
-Pretectal_Nucleus,APT,Right,1_forebrain,2_diencephalon,p1,15_pretectum,4_diencephalon,320,1154,0,4_diencephalon
+Pretectal_Nucleus,PT,Right,1_forebrain,2_diencephalon,p1,15_pretectum,4_diencephalon,320,1154,0,4_diencephalon
 Latero_Dorsal_Thalamic_Nucleus_Ventro_Lateral,LDVL,Right,1_forebrain,2_diencephalon,p2,17_thalamus,4_diencephalon,321,1155,0,4_diencephalon
 Latero_Posterior_Nuclei_of_Thalamus,LP,Right,1_forebrain,2_diencephalon,p2,17_thalamus,4_diencephalon,322,1156,0,4_diencephalon
 Anterior_Thalamic_Nuclei,AThal,Right,1_forebrain,2_diencephalon,p2,17_thalamus,4_diencephalon,323,1157,0,4_diencephalon
