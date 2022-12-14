@@ -44,6 +44,13 @@ colnames(fa_tab)[1] = 'Treatment'
 data = data.frame(fa_tab)
 data[,2:len] = apply(data[,2:len], 2, function(x) as.numeric(x)) # Convert data columns from character to numeric using 'apply'
 
+# Data frame pre-processing
+old_colnames = colnames(data)[substr(colnames(data),1,1)=="X"][-1]
+new_colnames = sub('.','',old_colnames)
+colnames(data)[colnames(data) %in% old_colnames] <- new_colnames
+
+# Omit NA'S
+data=na.omit(data)
 
 ## Create blank matrix to represent p values (column) for each brain region (rows)
 colnames_vec = c("Full Structure", "Region ID", "Mean sedentary group", "Mean voluntary group", "Mean voluntary + enforced group",
